@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlloCate - ETF Portfolio Designer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; 
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+        }
+        .details-content {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .details-content.open {
+            display: block;
+        }
+        .arrow-icon {
+            transition: transform 0.3s ease;
+        }
+        .arrow-icon.rotated {
+            transform: rotate(180deg);
+        }
+        .details-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 8px; 
+        }
+        .details-list::-webkit-scrollbar { width: 6px; }
+        .details-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
+        .details-list::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
+        .details-list::-webkit-scrollbar-thumb:hover { background: #555; }
+        .tooltip { position: relative; display: inline-block; cursor: help; }
+        .tooltip .tooltiptext {
+            visibility: hidden; width: 220px; background-color: #555; color: #fff; text-align: center;
+            border-radius: 6px; padding: 5px 0; position: absolute; z-index: 1; bottom: 125%;
+            left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 0.875rem;
+        }
+        .tooltip .tooltiptext::after {
+            content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px;
+            border-width: 5px; border-style: solid; border-color: #555 transparent transparent transparent;
+        }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+        .video-container video { max-width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+        .ai-feature-card { border-left-width: 4px; }
+        .ai-insights-card { background-color: #e0f2fe; border-color: #0ea5e9; }
+        .diversification-suggestions-card { background-color: #e0fbf4; border-color: #10b981; }
+        .ai-profile-refinement-card { background-color: #ffedd5; border-color: #f97316; } /* Orange theme for profile refinement */
+
+        .pulsing-dots span {
+            display: inline-block; width: 8px; height: 8px; margin: 0 2px;
+            background-color: #0ea5e9; border-radius: 50%;
+            animation: pulse 1.4s infinite ease-in-out both;
+        }
+        .diversification-suggestions-card .pulsing-dots span { background-color: #10b981; }
+        .ai-profile-refinement-card .pulsing-dots span { background-color: #f97316; } /* Orange dots */
+
+        .pulsing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .pulsing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes pulse { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-gray-800 text-white p-4 shadow-md">
+        <div class="container mx-auto max-w-6xl text-center md:text-left">
+            <h1 class="text-3xl font-bold text-blue-400">AlloCate</h1>
+            <p class="text-sm text-gray-300">Smart ETF Allocation, Simplified.</p>
+        </div>
+    </header>
+
+    <section id="videoIntroduction" class="container mx-auto max-w-4xl p-4 md:p-6 text-center">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Discover AlloCate in Action</h2>
+        <div class="video-container bg-white p-2 rounded-lg shadow-lg inline-block">
+            <video controls poster="https://placehold.co/800x450/E2E8F0/4A5568?text=AlloCate+Intro+Video" class="w-full rounded-md">
+                <source src="#" type="video/mp4"> Your browser does not support the video tag.
+            </video>
+        </div>
+        <p class="mt-3 text-sm text-gray-600">Learn how AlloCate can help you design and optimize your ETF portfolio.</p>
+    </section>
+
+    <main class="container mx-auto max-w-6xl p-4 md:p-6">
+        <section id="userInputSection" class="card">
+            <h2 class="text-xl font-semibold mb-4">1. Define Your Desired Portfolio</h2>
+            <div class="mb-6">
+                <h3 class="text-lg font-medium mb-2">Start with a Ready-Made Profile:</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button data-profile="vdco" class="profile-btn bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150">Conservative</button>
+                    <button data-profile="vdba" class="profile-btn bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150">Balanced</button>
+                    <button data-profile="vdgr" class="profile-btn bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150">Growth</button>
+                    <button data-profile="vdhg" class="profile-btn bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150">High Growth</button>
+                </div>
+            </div>
+
+            <div id="aiProfileRefinementSection" class="card ai-profile-refinement-card hidden mb-6">
+                <h3 class="text-lg font-medium mb-2 text-orange-800">✨ AI-Assisted Profile Refinement</h3>
+                <p class="text-sm text-orange-700 mb-1">You've selected the "<span id="selectedBaseProfileName" class="font-semibold"></span>" profile as a base.</p>
+                <p class="text-sm text-orange-700 mb-3">Describe any specific focus, theme, or concern you'd like the AI to consider for adjusting this profile (e.g., "more focus on renewable energy", "cautious about tech sector", "higher exposure to Asia Pacific developed markets").</p>
+                <textarea id="aiProfileRefinementInput" rows="3" class="w-full p-2 border border-orange-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 text-sm" placeholder="Type your focus here..."></textarea>
+                <button id="refineProfileWithAiBtn" class="mt-3 w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-md transition duration-150">
+                    Refine with AI
+                </button>
+                <div id="aiProfileRefinementLoading" class="hidden text-center py-3">
+                    <div class="pulsing-dots inline-block"><span></span><span></span><span></span></div>
+                    <p class="mt-1 text-xs text-orange-700">AI is refining the profile...</p>
+                </div>
+                <p id="aiProfileRefinementError" class="text-red-500 text-sm mt-2"></p>
+            </div>
+
+            <div id="sectorInputsContainer" class="mb-6">
+                <h3 class="text-lg font-medium mb-2">Desired Sector Exposure (%):</h3>
+                <div id="sectorInputs" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3"></div>
+                <p class="mt-2 font-semibold">Total Sector Allocation: <span id="totalSectorAllocation">0</span>%</p>
+                <p id="sectorError" class="text-red-500 text-sm mt-1"></p>
+            </div>
+            <div id="geoInputsContainer" class="mb-6">
+                <h3 class="text-lg font-medium mb-2">Desired Geographic Exposure (%):</h3>
+                <div id="geoInputs" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3"></div>
+                <p class="mt-2 font-semibold">Total Geographic Allocation: <span id="totalGeoAllocation">0</span>%</p>
+                <p id="geoError" class="text-red-500 text-sm mt-1"></p>
+            </div>
+            <button id="generatePortfolioBtn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md transition duration-150 text-lg">
+                Optimize My Allocation
+            </button>
+            <p id="formErrorMessage" class="text-red-600 text-center mt-3 text-sm"></p>
+        </section>
+
+        <section id="resultsSection" class="hidden mt-8">
+            <h2 class="text-xl font-semibold mb-4">2. Your Optimized Portfolio</h2>
+            <div id="loadingIndicator" class="hidden text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div>
+                <p class="mt-3 text-lg font-medium">Optimizing your allocation, please wait...</p>
+            </div>
+            <div id="noSolutionMessage" class="hidden card bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+                <p class="font-bold">No Suitable Portfolio Found</p>
+                <p>We couldn't find a combination of up to 3 ETFs that closely matches your desired exposures. Adjust your desired exposures or try again.</p>
+            </div>
+            <div id="portfolioIndicators" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="card indicator-card"><div class="indicator-header cursor-pointer flex justify-between items-center"><div><h4 class="text-sm text-gray-500">Illustrative 1-Yr Return</h4><p id="indicatorReturn" class="text-2xl font-bold">-%</p></div><svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div><div class="details-content"><p class="text-sm text-gray-600 mb-2">Weighted average of 1-year historical returns.</p><ul id="returnDetailsList" class="text-xs text-gray-500 space-y-1 details-list"></ul></div></div>
+                <div class="card indicator-card"><div class="indicator-header cursor-pointer flex justify-between items-center"><div><h4 class="text-sm text-gray-500">Avg. Expense Ratio</h4><p id="indicatorExpense" class="text-2xl font-bold">-%</p></div><svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div><div class="details-content"><p class="text-sm text-gray-600 mb-2">Weighted average of expense ratios.</p><ul id="expenseDetailsList" class="text-xs text-gray-500 space-y-1 details-list"></ul></div></div>
+                <div class="card indicator-card"><div class="indicator-header cursor-pointer flex justify-between items-center"><div><h4 class="text-sm text-gray-500">Sector Match Quality</h4><p id="indicatorSectorMatch" class="text-2xl font-bold">-</p><p id="indicatorSectorMatchDesc" class="text-xs text-gray-500">-</p></div><svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div><div class="details-content"><p class="text-sm text-gray-600 mb-1">Score: <code class="text-xs">100 - Eff. Avg. Dev.</code></p><p class="text-sm text-gray-600 mb-2">Eff. Avg. Dev. (Sectors): <span id="sectorEffectiveAvgDeviation" class="font-medium">-</span>% <span class="tooltip"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block ml-1 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" /></svg><span class="tooltiptext">(Σ|Actual% - Target%|) / 2</span></span></p><h5 class="text-xs font-semibold text-gray-700 mb-1">Individual Deviations:</h5><ul id="sectorDeviationsList" class="text-xs text-gray-500 space-y-1 details-list"></ul></div></div>
+                <div class="card indicator-card"><div class="indicator-header cursor-pointer flex justify-between items-center"><div><h4 class="text-sm text-gray-500">Geo. Match Quality</h4><p id="indicatorGeoMatch" class="text-2xl font-bold">-</p><p id="indicatorGeoMatchDesc" class="text-xs text-gray-500">-</p></div><svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div><div class="details-content"><p class="text-sm text-gray-600 mb-1">Score: <code class="text-xs">100 - Eff. Avg. Dev.</code></p><p class="text-sm text-gray-600 mb-2">Eff. Avg. Dev. (Geo.): <span id="geoEffectiveAvgDeviation" class="font-medium">-</span>% <span class="tooltip"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block ml-1 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" /></svg><span class="tooltiptext">(Σ|Actual% - Target%|) / 2</span></span></p><h5 class="text-xs font-semibold text-gray-700 mb-1">Individual Deviations:</h5><ul id="geoDeviationsList" class="text-xs text-gray-500 space-y-1 details-list"></ul></div></div>
+            </div>
+            <div id="etfCompositionSection" class="card">
+                <h3 class="text-lg font-semibold mb-3">ETF Composition</h3>
+                <div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ETF Name</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticker</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight (%)</th></tr></thead><tbody id="etfCompositionTableBody" class="bg-white divide-y divide-gray-200"></tbody></table></div>
+                <p class="mt-3 font-semibold">Total Weight: <span id="totalCompositionWeight">0</span>%</p><p id="compositionError" class="text-red-500 text-sm mt-1"></p>
+                <div class="flex flex-col sm:flex-row gap-2 mt-4"><button id="recalculateInsightsBtn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 flex-grow">Recalculate Portfolio Insights</button></div>
+                <div class="flex flex-col sm:flex-row gap-2 mt-3"><button id="getAiInsightsBtn" class="bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 flex-grow">✨ Get AI Commentary</button><button id="getDiversificationSuggestionsBtn" class="bg-teal-500 hover:bg-teal-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 flex-grow">✨ Suggest Diversification ETFs</button></div>
+            </div>
+            <div id="aiInsightsCard" class="card ai-feature-card ai-insights-card hidden mt-6"><h3 class="text-lg font-semibold mb-2 text-sky-800">✨ AI Portfolio Commentary</h3><div id="aiInsightsLoading" class="hidden text-center py-4"><div class="pulsing-dots inline-block"><span></span><span></span><span></span></div><p class="mt-2 text-sm text-sky-700">Generating commentary...</p></div><p id="aiInsightsContent" class="text-sm text-gray-700 leading-relaxed"></p><p id="aiInsightsError" class="text-sm text-red-600"></p></div>
+            <div id="diversificationSuggestionsCard" class="card ai-feature-card diversification-suggestions-card hidden mt-6"><h3 class="text-lg font-semibold mb-2 text-teal-800">✨ AI Diversification Suggestions</h3><div id="diversificationLoading" class="hidden text-center py-4"><div class="pulsing-dots inline-block"><span></span><span></span><span></span></div><p class="mt-2 text-sm text-teal-700">Generating diversification ideas...</p></div><div id="diversificationSuggestionsContent" class="text-sm text-gray-700 leading-relaxed"></div><p id="diversificationSuggestionsError" class="text-sm text-red-600"></p></div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <div class="card"><h3 class="text-lg font-semibold mb-3">Sector Exposure Comparison</h3><div class="overflow-x-auto max-h-96"><table class="min-w-full divide-y divide-gray-200 text-sm"><thead class="bg-gray-50 sticky top-0"><tr><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th></tr></thead><tbody id="sectorComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody></table></div><div class="mt-4" style="height: 250px;"><canvas id="sectorDoughnutChart"></canvas></div></div>
+                <div class="card"><h3 class="text-lg font-semibold mb-3">Geographic Exposure Comparison</h3><div class="overflow-x-auto max-h-96"><table class="min-w-full divide-y divide-gray-200 text-sm"><thead class="bg-gray-50 sticky top-0"><tr><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Geography</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th></tr></thead><tbody id="geoComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody></table></div><div class="mt-4" style="height: 250px;"><canvas id="geoDoughnutChart"></canvas></div></div>
+            </div>
+        </section>
+    </main>
+    <footer class="text-center py-6 text-sm text-gray-500"><p>&copy; <span id="currentYear"></span> AlloCate. Illustrative purposes only.</p></footer>
+
+<script>
+    const CONFIG = {
+        SECTORS: ['Information Technology', 'Health Care', 'Financials', 'Consumer Discretionary', 'Communication Services', 'Industrials', 'Consumer Staples', 'Energy', 'Utilities', 'Real Estate', 'Materials'],
+        GEOGRAPHIES: ['North America', 'Europe (Developed)', 'Asia Pacific (Developed)', 'Emerging Markets'],
+        GENERIC_EQUITY_SECTOR_PROFILE: {'Information Technology': 22, 'Health Care': 14, 'Financials': 18, 'Consumer Discretionary': 11, 'Communication Services': 7, 'Industrials': 9, 'Consumer Staples': 6, 'Energy': 4, 'Utilities': 2, 'Real Estate': 2, 'Materials': 5 },
+        READY_MADE_PORTFOLIOS: {
+            vdco: { name: "Conservative", geographies: { 'North America': 32, 'Europe (Developed)': 13, 'Asia Pacific (Developed)': 48, 'Emerging Markets': 7 } },
+            vdba: { name: "Balanced", geographies: { 'North America': 32, 'Europe (Developed)': 14, 'Asia Pacific (Developed)': 48, 'Emerging Markets': 6 } },
+            vdgr: { name: "Growth", geographies: { 'North America': 32, 'Europe (Developed)': 14, 'Asia Pacific (Developed)': 48, 'Emerging Markets': 6 } },
+            vdhg: { name: "High Growth", geographies: { 'North America': 33, 'Europe (Developed)': 14, 'Asia Pacific (Developed)': 47, 'Emerging Markets': 6 } }
+        },
+        MAX_ETFS_IN_PORTFOLIO: 3, WEIGHT_STEP: 0.05,
+        CHART_COLORS: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6366F1', '#0EA5E9', '#FCD34D', '#A78BFA', '#2DD4BF'],
+        CHART_FILTER_THRESHOLD: 0.001
+    };
+    const RAW_VANGUARD_ETFS = [ /* ... Same ETF data as before ... */ 
+        { name: "Vanguard Aus Shares Index ETF", ticker: "VAS", expenseRatio: 0.0007, y1_return: 0.085, sectors: { 'Financials': 0.30, 'Materials': 0.20, 'Health Care': 0.10, 'Industrials': 0.08, 'Consumer Discretionary': 0.07, 'Real Estate': 0.07, 'Energy': 0.05, 'Utilities': 0.04, 'Communication Services': 0.03, 'Information Technology': 0.03, 'Consumer Staples': 0.03 }, geographies: { 'North America': 0, 'Europe (Developed)': 0, 'Asia Pacific (Developed)': 1.0, 'Emerging Markets': 0 } },
+        { name: "Vanguard Intl Shares Index ETF", ticker: "VGS", expenseRatio: 0.0018, y1_return: 0.122, sectors: { 'Information Technology': 0.25, 'Financials': 0.15, 'Health Care': 0.13, 'Industrials': 0.10, 'Consumer Discretionary': 0.12, 'Communication Services': 0.08, 'Consumer Staples': 0.07, 'Materials': 0.04, 'Energy': 0.03, 'Utilities': 0.02, 'Real Estate': 0.01 }, geographies: { 'North America': 0.70, 'Europe (Developed)': 0.20, 'Asia Pacific (Developed)': 0.10, 'Emerging Markets': 0 } },
+        { name: "Vanguard Emerging Mkts ETF", ticker: "VGE", expenseRatio: 0.0048, y1_return: 0.051, sectors: { 'Financials': 0.22, 'Information Technology': 0.20, 'Consumer Discretionary': 0.15, 'Communication Services': 0.10, 'Materials': 0.08, 'Industrials': 0.07, 'Energy': 0.06, 'Consumer Staples': 0.05, 'Health Care': 0.04, 'Utilities': 0.02, 'Real Estate': 0.01 }, geographies: { 'North America': 0, 'Europe (Developed)': 0, 'Asia Pacific (Developed)': 0.15, 'Emerging Markets': 0.85 } },
+        { name: "Vanguard Info Tech ETF", ticker: "VGT", expenseRatio: 0.0010, y1_return: 0.255, sectors: { 'Information Technology': 0.85, 'Communication Services': 0.10, 'Industrials': 0.03, 'Financials': 0.02 }, geographies: { 'North America': 0.95, 'Europe (Developed)': 0.03, 'Asia Pacific (Developed)': 0.02 } }, // Simplified for brevity
+        { name: "Vanguard Health Care ETF", ticker: "VHT", expenseRatio: 0.0010, y1_return: 0.098, sectors: { 'Health Care': 0.90, 'Information Technology': 0.05, 'Industrials': 0.03, 'Financials': 0.02 }, geographies: { 'North America': 0.96, 'Europe (Developed)': 0.02, 'Asia Pacific (Developed)': 0.01, 'Emerging Markets': 0.01 } },
+        { name: "Vanguard Global Value ETF", ticker: "VVLU", expenseRatio: 0.0022, y1_return: 0.115, sectors: { 'Financials': 0.25, 'Health Care': 0.15, 'Industrials': 0.12, 'Energy': 0.10, 'Consumer Staples': 0.09, 'Utilities': 0.08, 'Information Technology': 0.07, 'Materials': 0.06, 'Communication Services': 0.04, 'Consumer Discretionary': 0.03, 'Real Estate': 0.01}, geographies: { 'North America': 0.50, 'Europe (Developed)': 0.30, 'Asia Pacific (Developed)': 0.15, 'Emerging Markets': 0.05 } }
+    ];
+    let vanguardETFs = [], originalTargetSectors = {}, originalTargetGeographies = {}, currentPortfolio = null, sectorChartInstance = null, geoChartInstance = null;
+    let selectedBaseProfileKey = null; // To store the key of the selected ready-made profile for AI refinement
+
+    const domElements = {
+        profileButtons: null, sectorInputsContainer: document.getElementById('sectorInputsContainer'), sectorInputsDiv: document.getElementById('sectorInputs'),
+        totalSectorAllocationSpan: document.getElementById('totalSectorAllocation'), sectorErrorP: document.getElementById('sectorError'),
+        geoInputsContainer: document.getElementById('geoInputsContainer'), geoInputsDiv: document.getElementById('geoInputs'),
+        totalGeoAllocationSpan: document.getElementById('totalGeoAllocation'), geoErrorP: document.getElementById('geoError'),
+        generatePortfolioBtn: document.getElementById('generatePortfolioBtn'), formErrorMessageP: document.getElementById('formErrorMessage'),
+        userInputSection: document.getElementById('userInputSection'), resultsSection: document.getElementById('resultsSection'),
+        loadingIndicatorDiv: document.getElementById('loadingIndicator'), noSolutionMessageDiv: document.getElementById('noSolutionMessage'),
+        portfolioIndicatorsDiv: document.getElementById('portfolioIndicators'), indicatorReturnP: document.getElementById('indicatorReturn'),
+        returnDetailsListUl: document.getElementById('returnDetailsList'), indicatorExpenseP: document.getElementById('indicatorExpense'),
+        expenseDetailsListUl: document.getElementById('expenseDetailsList'), indicatorSectorMatchP: document.getElementById('indicatorSectorMatch'),
+        indicatorSectorMatchDescP: document.getElementById('indicatorSectorMatchDesc'), sectorEffectiveAvgDeviationSpan: document.getElementById('sectorEffectiveAvgDeviation'),
+        sectorDeviationsListUl: document.getElementById('sectorDeviationsList'), indicatorGeoMatchP: document.getElementById('indicatorGeoMatch'),
+        indicatorGeoMatchDescP: document.getElementById('indicatorGeoMatchDesc'), geoEffectiveAvgDeviationSpan: document.getElementById('geoEffectiveAvgDeviation'),
+        geoDeviationsListUl: document.getElementById('geoDeviationsList'), indicatorCardHeaders: null, 
+        etfCompositionSectionDiv: document.getElementById('etfCompositionSection'), etfCompositionTableBody: document.getElementById('etfCompositionTableBody'),
+        totalCompositionWeightSpan: document.getElementById('totalCompositionWeight'), compositionErrorP: document.getElementById('compositionError'),
+        recalculateInsightsBtn: document.getElementById('recalculateInsightsBtn'), getAiInsightsBtn: document.getElementById('getAiInsightsBtn'),
+        getDiversificationSuggestionsBtn: document.getElementById('getDiversificationSuggestionsBtn'), 
+        aiInsightsCard: document.getElementById('aiInsightsCard'), aiInsightsLoading: document.getElementById('aiInsightsLoading'),
+        aiInsightsContent: document.getElementById('aiInsightsContent'), aiInsightsError: document.getElementById('aiInsightsError'),
+        diversificationSuggestionsCard: document.getElementById('diversificationSuggestionsCard'), 
+        diversificationLoading: document.getElementById('diversificationLoading'), 
+        diversificationSuggestionsContent: document.getElementById('diversificationSuggestionsContent'), 
+        diversificationSuggestionsError: document.getElementById('diversificationSuggestionsError'), 
+        sectorComparisonTableBody: document.getElementById('sectorComparisonTableBody'), sectorDoughnutChartCanvas: document.getElementById('sectorDoughnutChart'),
+        geoComparisonTableBody: document.getElementById('geoComparisonTableBody'), geoDoughnutChartCanvas: document.getElementById('geoDoughnutChart'),
+        currentYearSpan: document.getElementById('currentYear'),
+        // New DOM elements for AI Profile Refinement
+        aiProfileRefinementSection: document.getElementById('aiProfileRefinementSection'),
+        selectedBaseProfileNameSpan: document.getElementById('selectedBaseProfileName'),
+        aiProfileRefinementInput: document.getElementById('aiProfileRefinementInput'),
+        refineProfileWithAiBtn: document.getElementById('refineProfileWithAiBtn'),
+        aiProfileRefinementLoading: document.getElementById('aiProfileRefinementLoading'),
+        aiProfileRefinementError: document.getElementById('aiProfileRefinementError'),
+    };
+
+    const round = (num, places = 2) => parseFloat(num.toFixed(places));
+    const formatPercent = (decimal, places = 2) => `${round(decimal * 100, places)}%`;
+
+    function normalizeETFData() {
+        vanguardETFs = RAW_VANGUARD_ETFS.map(etf => {
+            const normalizedSectors = {}; CONFIG.SECTORS.forEach(s => normalizedSectors[s] = etf.sectors[s] || 0);
+            const normalizedGeographies = {}; CONFIG.GEOGRAPHIES.forEach(g => normalizedGeographies[g] = etf.geographies[g] || 0);
+            // Ensure all sectors and geographies are present, defaulting to 0
+            CONFIG.SECTORS.forEach(s => { if(!(s in normalizedSectors)) normalizedSectors[s] = 0; });
+            CONFIG.GEOGRAPHIES.forEach(g => { if(!(g in normalizedGeographies)) normalizedGeographies[g] = 0; });
+            return { ...etf, sectors: normalizedSectors, geographies: normalizedGeographies };
+        });
+    }
+    
+    function generateInputFields(container, items, type, onUpdateCallback) {
+        container.innerHTML = ''; 
+        items.forEach(item => {
+            const div = document.createElement('div'); div.className = 'flex items-center justify-between';
+            const label = document.createElement('label'); label.htmlFor = `${type}-${item.replace(/\s+/g, '-')}`; label.textContent = `${item}:`; label.className = 'text-sm font-medium text-gray-700 mr-2 whitespace-nowrap';
+            const input = document.createElement('input'); input.type = 'number'; input.id = `${type}-${item.replace(/\s+/g, '-')}`; input.name = item; input.min = 0; input.max = 100; input.step = 1; input.className = 'input-field w-24 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm'; 
+            input.addEventListener('input', () => {
+                onUpdateCallback();
+                // Hide AI profile refinement section if user manually changes inputs
+                domElements.aiProfileRefinementSection.classList.add('hidden');
+                selectedBaseProfileKey = null; 
+            });
+            div.appendChild(label); div.appendChild(input); container.appendChild(div);
+        });
+    }
+
+    function updateTotalAllocation(type) {
+        const inputs = domElements[`${type}InputsDiv`].querySelectorAll('input'); let total = 0;
+        inputs.forEach(input => total += parseFloat(input.value) || 0);
+        domElements[`total${type.charAt(0).toUpperCase() + type.slice(1)}AllocationSpan`].textContent = round(total, 0);
+        const errorEl = domElements[`${type}ErrorP`];
+        errorEl.textContent = (total !== 0 && total !== 100) ? 'Total must be 100%.' : '';
+        return total;
+    }
+
+    function populateInputFields(type, values) { 
+        const inputs = domElements[`${type}InputsDiv`].querySelectorAll('input');
+        inputs.forEach(input => input.value = values[input.name] !== undefined ? round(values[input.name], 0) : 0);
+        updateTotalAllocation(type);
+    }
+
+    function handleReadyMadeProfileClick(event) {
+        selectedBaseProfileKey = event.target.dataset.profile; // Store the key
+        if (!selectedBaseProfileKey || !CONFIG.READY_MADE_PORTFOLIOS[selectedBaseProfileKey]) return;
+        
+        const profile = CONFIG.READY_MADE_PORTFOLIOS[selectedBaseProfileKey];
+        populateInputFields('sector', CONFIG.GENERIC_EQUITY_SECTOR_PROFILE); 
+        populateInputFields('geo', profile.geographies);
+        
+        // Show and setup AI Profile Refinement section
+        domElements.selectedBaseProfileNameSpan.textContent = profile.name;
+        domElements.aiProfileRefinementInput.value = ''; // Clear previous input
+        domElements.aiProfileRefinementError.textContent = '';
+        domElements.aiProfileRefinementLoading.classList.add('hidden');
+        domElements.aiProfileRefinementSection.classList.remove('hidden');
+        domElements.aiProfileRefinementInput.focus();
+
+        setTimeout(() => domElements.aiProfileRefinementSection.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    }
+
+    async function findBestPortfolio(targetSectors, targetGeographies) { 
+        return new Promise(resolve => {
+            setTimeout(() => { 
+                let bestPortfolio = null; let minCombinedError = Infinity; const etfsToConsider = vanguardETFs;
+                for (let k = 1; k <= CONFIG.MAX_ETFS_IN_PORTFOLIO; k++) {
+                    const combinations = getCombinations(etfsToConsider, k);
+                    for (const etfCombination of combinations) {
+                        const weightsIterator = generateWeightCombinations(k, CONFIG.WEIGHT_STEP);
+                        for (const weights of weightsIterator) {
+                            if (weights.reduce((s, w) => s + w, 0) > 1.0001) continue; 
+                            const { actualSectors, actualGeographies, sectorSumAbsDiff, geoSumAbsDiff } = calculatePortfolioMetricsInternal(etfCombination, weights, targetSectors, targetGeographies);
+                            const combinedError = sectorSumAbsDiff + geoSumAbsDiff;
+                            if (combinedError < minCombinedError) {
+                                minCombinedError = combinedError;
+                                bestPortfolio = { etfs: etfCombination.map((etf, i) => ({ ...etf, weight: weights[i] })), actualSectors, actualGeographies, sectorSumAbsDiff, geoSumAbsDiff, combinedError };
+                            }
+                        }
+                    }
+                }
+                resolve(bestPortfolio);
+            }, 50); 
+        });
+    }
+
+    function getCombinations(arr, k) { if (k === 0) return [[]]; if (arr.length === 0) return []; const first = arr[0], rest = arr.slice(1); const combsWithoutFirst = getCombinations(rest, k), combsWithFirst = getCombinations(rest, k - 1).map(comb => [first, ...comb]); return [...combsWithFirst, ...combsWithoutFirst]; }
+    function* generateWeightCombinations(numEtfs, step) { const numSteps = Math.round(1/step); if (numEtfs===1) yield [1.0]; else if (numEtfs===2) for(let i=0;i<=numSteps;i++){const w1=i*step,w2=1.0-w1;if(w2>=-0.0001)yield [round(w1,4),round(w2,4)];} else if (numEtfs===3) for(let i=0;i<=numSteps;i++){const w1=i*step;for(let j=0;j<=numSteps-i;j++){const w2=j*step,w3=1.0-w1-w2;if(w3>=-0.0001)yield [round(w1,4),round(w2,4),round(w3,4)];}}}
+    function calculatePortfolioMetricsInternal(etfSel, weights, targetS, targetG) { const actualS={},actualG={};CONFIG.SECTORS.forEach(s=>actualS[s]=0);CONFIG.GEOGRAPHIES.forEach(g=>actualG[g]=0);etfSel.forEach((etf,idx)=>{const w=weights[idx];CONFIG.SECTORS.forEach(s=>actualS[s]+=(etf.sectors[s]||0)*w);CONFIG.GEOGRAPHIES.forEach(g=>actualG[g]+=(etf.geographies[g]||0)*w);});let sSumAD=0;CONFIG.SECTORS.forEach(s=>sSumAD+=Math.abs(actualS[s]-(targetS[s]||0)));let gSumAD=0;CONFIG.GEOGRAPHIES.forEach(g=>gSumAD+=Math.abs(actualG[g]-(targetG[g]||0)));return{actualSectors:actualS,actualGeographies:actualG,sectorSumAbsDiff:sSumAD,geoSumAbsDiff:gSumAD};}
+    function displayLoading(isLoading) { domElements.loadingIndicatorDiv.classList.toggle('hidden',!isLoading);domElements.loadingIndicatorDiv.querySelector('p').textContent=isLoading?'Optimizing allocation...':'Optimizing portfolio...';if(isLoading){domElements.resultsSection.classList.remove('hidden');domElements.noSolutionMessageDiv.classList.add('hidden');domElements.portfolioIndicatorsDiv.classList.add('hidden');domElements.etfCompositionSectionDiv.classList.add('hidden');domElements.aiInsightsCard.classList.add('hidden');domElements.diversificationSuggestionsCard.classList.add('hidden');domElements.sectorComparisonTableBody.parentElement.parentElement.parentElement.classList.add('hidden');domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.add('hidden');}else{domElements.portfolioIndicatorsDiv.classList.remove('hidden');domElements.etfCompositionSectionDiv.classList.remove('hidden');domElements.sectorComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');}}
+    function displayNoSolution() { domElements.resultsSection.classList.remove('hidden');domElements.noSolutionMessageDiv.classList.remove('hidden');domElements.portfolioIndicatorsDiv.classList.add('hidden');domElements.etfCompositionSectionDiv.classList.add('hidden');domElements.aiInsightsCard.classList.add('hidden');domElements.diversificationSuggestionsCard.classList.add('hidden');domElements.sectorComparisonTableBody.parentElement.parentElement.parentElement.classList.add('hidden');domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.add('hidden');}
+    function getScoreDescription(score) { if(score>=90)return"Excellent";if(score>=80)return"Good";if(score>=70)return"Fair";return"Needs Improvement";}
+    function updatePortfolioDisplay(portfolioData,targetSectorsPercent,targetGeographiesPercent){let weightedReturn=0,weightedExpense=0;const returnDetails=[],expenseDetails=[];portfolioData.etfs.forEach(etf=>{weightedReturn+=etf.y1_return*etf.weight;weightedExpense+=etf.expenseRatio*etf.weight;returnDetails.push(`<li>${etf.ticker}: ${formatPercent(etf.weight)} * ${formatPercent(etf.y1_return)} = ${formatPercent(etf.y1_return*etf.weight,3)}</li>`);expenseDetails.push(`<li>${etf.ticker}: ${formatPercent(etf.weight)} * ${formatPercent(etf.expenseRatio,4)} = ${formatPercent(etf.expenseRatio*etf.weight,5)}</li>`);});domElements.indicatorReturnP.textContent=formatPercent(weightedReturn);domElements.returnDetailsListUl.innerHTML=returnDetails.join('');domElements.indicatorExpenseP.textContent=formatPercent(weightedExpense,3);domElements.expenseDetailsListUl.innerHTML=expenseDetails.join('');const effAvgDevSectors=portfolioData.sectorSumAbsDiff*100/2,sectorScore=Math.max(0,round(100-effAvgDevSectors));domElements.indicatorSectorMatchP.textContent=`${sectorScore}/100`;domElements.indicatorSectorMatchDescP.textContent=getScoreDescription(sectorScore);domElements.sectorEffectiveAvgDeviationSpan.textContent=round(effAvgDevSectors);const sectorDevs=[];CONFIG.SECTORS.forEach(s=>{const actual=(portfolioData.actualSectors[s]||0)*100,desired=(targetSectorsPercent[s]||0),diff=Math.abs(actual-desired);if(diff>0.001)sectorDevs.push(`<li>${s}: ${round(diff)}% dev.</li>`);});domElements.sectorDeviationsListUl.innerHTML=sectorDevs.length?sectorDevs.join(''):'<li>No sig. deviations.</li>';const effAvgDevGeo=portfolioData.geoSumAbsDiff*100/2,geoScore=Math.max(0,round(100-effAvgDevGeo));domElements.indicatorGeoMatchP.textContent=`${geoScore}/100`;domElements.indicatorGeoMatchDescP.textContent=getScoreDescription(geoScore);domElements.geoEffectiveAvgDeviationSpan.textContent=round(effAvgDevGeo);const geoDevs=[];CONFIG.GEOGRAPHIES.forEach(g=>{const actual=(portfolioData.actualGeographies[g]||0)*100,desired=(targetGeographiesPercent[g]||0),diff=Math.abs(actual-desired);if(diff>0.001)geoDevs.push(`<li>${g}: ${round(diff)}% dev.</li>`);});domElements.geoDeviationsListUl.innerHTML=geoDevs.length?geoDevs.join(''):'<li>No sig. deviations.</li>';domElements.etfCompositionTableBody.innerHTML='';let totalCompWeight=0;portfolioData.etfs.forEach(etf=>{const row=domElements.etfCompositionTableBody.insertRow();row.insertCell().textContent=etf.name;row.insertCell().textContent=etf.ticker;const wc=row.insertCell(),wi=document.createElement('input');wi.type='number';wi.min=0;wi.max=100;wi.step=1;wi.value=round(etf.weight*100,0);wi.dataset.ticker=etf.ticker;wi.className='etf-weight-input w-20 p-1 border border-gray-300 rounded-md text-sm';wi.addEventListener('input',updateTotalCompositionWeight);wc.appendChild(wi);totalCompWeight+=etf.weight*100;});domElements.totalCompositionWeightSpan.textContent=round(totalCompWeight,0);updateTotalCompositionWeight();updateComparisonTable(domElements.sectorComparisonTableBody,CONFIG.SECTORS,targetSectorsPercent,portfolioData.actualSectors,true);updateComparisonTable(domElements.geoComparisonTableBody,CONFIG.GEOGRAPHIES,targetGeographiesPercent,portfolioData.actualGeographies,true);createOrUpdateDoughnutChart('sector',domElements.sectorDoughnutChartCanvas,CONFIG.SECTORS,portfolioData.actualSectors,'Actual Sector Allocation');createOrUpdateDoughnutChart('geo',domElements.geoDoughnutChartCanvas,CONFIG.GEOGRAPHIES,portfolioData.actualGeographies,'Actual Geographic Allocation');domElements.aiInsightsCard.classList.add('hidden');domElements.aiInsightsContent.textContent='';domElements.aiInsightsError.textContent='';domElements.aiInsightsLoading.classList.add('hidden');domElements.diversificationSuggestionsCard.classList.add('hidden');domElements.diversificationSuggestionsContent.innerHTML='';domElements.diversificationSuggestionsError.textContent='';domElements.diversificationLoading.classList.add('hidden');domElements.resultsSection.classList.remove('hidden');domElements.noSolutionMessageDiv.classList.add('hidden');domElements.portfolioIndicatorsDiv.classList.remove('hidden');domElements.etfCompositionSectionDiv.classList.remove('hidden');domElements.sectorComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');}
+    function updateComparisonTable(tbody,categories,desiredMap,actualMapDecimal,actualIsDecimal=true){tbody.innerHTML='';categories.forEach(cat=>{const desiredVal=desiredMap[cat]||0,actualVal=actualMapDecimal[cat]||0;const desiredP=desiredVal>1.5?desiredVal:desiredVal*100,actualP=actualIsDecimal?actualVal*100:actualVal;const diff=actualP-desiredP,row=tbody.insertRow();row.insertCell().textContent=cat;row.insertCell().textContent=round(desiredP);row.insertCell().textContent=round(actualP);const diffCell=row.insertCell();diffCell.textContent=round(diff);if(diff<-0.01)diffCell.classList.add('text-red-600');else if(diff>0.01)diffCell.classList.add('text-green-600');});}
+    function createOrUpdateDoughnutChart(type,canvasEl,allLabels,dataMapDec,title){let chartInst=type==='sector'?sectorChartInstance:geoChartInstance;if(chartInst)chartInst.destroy();const filtLabels=[],filtData=[];allLabels.forEach(lbl=>{const val=dataMapDec[lbl]||0;if(val>=CONFIG.CHART_FILTER_THRESHOLD){filtLabels.push(lbl);filtData.push(round(val*100,2));}});const newCI=new Chart(canvasEl,{type:'doughnut',data:{labels:filtLabels,datasets:[{label:title,data:filtData,backgroundColor:CONFIG.CHART_COLORS,borderColor:'#fff',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:15,padding:10}},title:{display:true,text:title,font:{size:14,weight:'normal'}},tooltip:{callbacks:{label:ctx=>{let lbl=ctx.label||'';if(lbl)lbl+=': ';if(ctx.parsed!==null)lbl+=ctx.parsed+'%';return lbl;}}}}}});if(type==='sector')sectorChartInstance=newCI;else geoChartInstance=newCI;}
+    
+    async function handleGeneratePortfolio() {
+        domElements.formErrorMessageP.textContent = '';
+        domElements.aiProfileRefinementSection.classList.add('hidden'); // Hide AI refinement section
+        selectedBaseProfileKey = null;
+
+        if (updateTotalAllocation('sector') !== 100 || updateTotalAllocation('geo') !== 100) { domElements.formErrorMessageP.textContent = 'Total sector and geographic allocations must each be 100%.'; domElements.userInputSection.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+        displayLoading(true); domElements.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        originalTargetSectors = {}; domElements.sectorInputsDiv.querySelectorAll('input').forEach(i => originalTargetSectors[i.name] = (parseFloat(i.value)||0)/100);
+        originalTargetGeographies = {}; domElements.geoInputsDiv.querySelectorAll('input').forEach(i => originalTargetGeographies[i.name] = (parseFloat(i.value)||0)/100);
+        currentPortfolio = await findBestPortfolio(originalTargetSectors, originalTargetGeographies); displayLoading(false);
+        if (currentPortfolio && currentPortfolio.etfs && currentPortfolio.etfs.length > 0) {
+            const origTSPerc = {}, origTGPerc = {};
+            for (const k in originalTargetSectors) origTSPerc[k] = originalTargetSectors[k]*100;
+            for (const k in originalTargetGeographies) origTGPerc[k] = originalTargetGeographies[k]*100;
+            updatePortfolioDisplay(currentPortfolio, origTSPerc, origTGPerc);
+        } else displayNoSolution();
+    }
+    
+    function updateTotalCompositionWeight() {const inputs=domElements.etfCompositionTableBody.querySelectorAll('.etf-weight-input');let total=0;inputs.forEach(i=>total+=parseFloat(i.value)||0);domElements.totalCompositionWeightSpan.textContent=round(total,0);domElements.compositionErrorP.textContent=(total!==100&&total!==0)?'Total weight must be 100% to recalculate.':'';return total;}
+    function handleRecalculatePortfolioInsights() {if(!currentPortfolio||!currentPortfolio.etfs||currentPortfolio.etfs.length===0){domElements.compositionErrorP.textContent='No portfolio to recalculate.';return;}const inputs=domElements.etfCompositionTableBody.querySelectorAll('.etf-weight-input');let newTotalWPerc=0;const newWeightsDec=[],etfDataRecalc=[];const currentEtfTickers=currentPortfolio.etfs.map(e=>e.ticker);currentEtfTickers.forEach(ticker=>{const etfFD=vanguardETFs.find(e=>e.ticker===ticker);if(!etfFD){console.error(`Data for ${ticker} missing.`);domElements.compositionErrorP.textContent=`Err: ${ticker} data missing.`;return;}const inputF=Array.from(inputs).find(inp=>inp.dataset.ticker===ticker);if(!inputF){console.error(`Weight for ${ticker} missing.`);domElements.compositionErrorP.textContent=`Err: ${ticker} weight missing.`;return;}const wPerc=parseFloat(inputF.value)||0;newTotalWPerc+=wPerc;newWeightsDec.push(wPerc/100);etfDataRecalc.push({...etfFD});});if(Math.abs(newTotalWPerc-100)>0.1){domElements.compositionErrorP.textContent='Total weight must be 100%.';return;}domElements.compositionErrorP.textContent='';const{actualSectors,actualGeographies,sectorSumAbsDiff,geoSumAbsDiff}=calculatePortfolioMetricsInternal(etfDataRecalc,newWeightsDec,originalTargetSectors,originalTargetGeographies);const recalcP={etfs:etfDataRecalc.map((e,i)=>({...e,weight:newWeightsDec[i]})),actualSectors,actualGeographies,sectorSumAbsDiff,geoSumAbsDiff};currentPortfolio=recalcP;const origTSPerc={},origTGPerc={};for(const k in originalTargetSectors)origTSPerc[k]=originalTargetSectors[k]*100;for(const k in originalTargetGeographies)origTGPerc[k]=originalTargetGeographies[k]*100;updatePortfolioDisplay(recalcP,origTSPerc,origTGPerc);domElements.resultsSection.scrollIntoView({behavior:'smooth',block:'start'});}
+    function toggleIndicatorDetails(event){const h=event.currentTarget,c=h.nextElementSibling,a=h.querySelector('.arrow-icon');c.classList.toggle('open');a.classList.toggle('rotated');}
+
+    async function handleGetAiInsights() {
+        if(!currentPortfolio||!currentPortfolio.actualSectors||!currentPortfolio.actualGeographies){domElements.aiInsightsError.textContent='Generate/recalculate a portfolio first.';domElements.aiInsightsCard.classList.remove('hidden');domElements.aiInsightsContent.textContent='';domElements.aiInsightsLoading.classList.add('hidden');domElements.diversificationSuggestionsCard.classList.add('hidden');return;}
+        domElements.aiInsightsCard.classList.remove('hidden');domElements.aiInsightsLoading.classList.remove('hidden');domElements.aiInsightsContent.textContent='';domElements.aiInsightsError.textContent='';domElements.diversificationSuggestionsCard.classList.add('hidden');
+        let sDataStr="",gDataStr="";for(const s in currentPortfolio.actualSectors){const p=currentPortfolio.actualSectors[s]*100;if(p>0.1)sDataStr+=`${s}: ${round(p,1)}%, `;}sDataStr=sDataStr.slice(0,-2);for(const g in currentPortfolio.actualGeographies){const p=currentPortfolio.actualGeographies[g]*100;if(p>0.1)gDataStr+=`${g}: ${round(p,1)}%, `;}gDataStr=gDataStr.slice(0,-2);
+        const prompt=`You are a helpful financial assistant. Based on the following ETF portfolio's actual allocations, provide a brief (2-4 sentences) qualitative commentary. Discuss potential characteristics, strengths, or areas a user might want to consider further. Be balanced and objective. Do not give financial advice or make any specific investment recommendations. Actual Sector Allocations: ${sDataStr||'None significant'}. Actual Geographic Allocations: ${gDataStr||'None significant'}.`;
+        try{const payload={contents:[{role:"user",parts:[{text:prompt}]}]};const apiKey="";const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!response.ok){const errD=await response.json();console.error('Gemini API Err:',errD);throw new Error(`API req failed: ${response.status} ${errD?.error?.message||'Unknown'}`);}const result=await response.json();if(result.candidates?.[0]?.content?.parts?.[0]?.text)domElements.aiInsightsContent.textContent=result.candidates[0].content.parts[0].text.trim();else{console.error('Unexpected API response:',result);throw new Error('Could not extract insights.');}}catch(error){console.error('Err fetching AI insights:',error);domElements.aiInsightsError.textContent=`Failed to load AI insights. ${error.message}. Try again.`;domElements.aiInsightsContent.textContent='';}finally{domElements.aiInsightsLoading.classList.add('hidden');domElements.aiInsightsCard.scrollIntoView({behavior:'smooth',block:'nearest'});}}
+
+    async function handleGetDiversificationSuggestions() {
+        if(!currentPortfolio||!currentPortfolio.etfs){domElements.diversificationSuggestionsError.textContent='Generate/recalculate a portfolio first.';domElements.diversificationSuggestionsCard.classList.remove('hidden');domElements.diversificationSuggestionsContent.innerHTML='';domElements.diversificationLoading.classList.add('hidden');domElements.aiInsightsCard.classList.add('hidden');return;}
+        domElements.diversificationSuggestionsCard.classList.remove('hidden');domElements.diversificationLoading.classList.remove('hidden');domElements.diversificationSuggestionsContent.innerHTML='';domElements.diversificationSuggestionsError.textContent='';domElements.aiInsightsCard.classList.add('hidden');
+        const currentEtfTickers=currentPortfolio.etfs.map(etf=>etf.ticker);const availableETFsForSuggestion=RAW_VANGUARD_ETFS.filter(etf=>!currentEtfTickers.includes(etf.ticker)).map(etf=>({ticker:etf.ticker,name:etf.name}));
+        if(availableETFsForSuggestion.length===0){domElements.diversificationSuggestionsContent.innerHTML='<p>All available ETFs are already in your portfolio or no other ETFs are available for suggestion.</p>';domElements.diversificationLoading.classList.add('hidden');return;}
+        let sDataStr="",gDataStr="";for(const s in currentPortfolio.actualSectors){const p=currentPortfolio.actualSectors[s]*100;if(p>0.1)sDataStr+=`${s}: ${round(p,1)}%, `;}sDataStr=sDataStr.slice(0,-2);for(const g in currentPortfolio.actualGeographies){const p=currentPortfolio.actualGeographies[g]*100;if(p>0.1)gDataStr+=`${g}: ${round(p,1)}%, `;}gDataStr=gDataStr.slice(0,-2);const currentPortfolioETFsString=currentPortfolio.etfs.map(e=>`${e.name} (${e.ticker})`).join(', ');
+        const prompt=`You are a helpful financial assistant. Current portfolio consists of: ${currentPortfolioETFsString}. Current portfolio actual sector allocations: ${sDataStr||'None significant'}. Current portfolio actual geographic allocations: ${gDataStr||'None significant'}. Available ETFs to suggest from (provide ticker and name): ${JSON.stringify(availableETFsForSuggestion)}. Based on this, suggest 1 or 2 additional ETFs from the 'Available ETFs' list that could enhance diversification for the current portfolio. For each suggestion, provide its ticker, name, and a detailed (3-4 sentences) rationale. This rationale should clearly explain how the suggested ETF would enhance diversification, specifically mentioning which underrepresented sectors or geographies it covers, or what different investment style or market cap it introduces, and how it complements the existing portfolio's exposures. Do not suggest ETFs already in the current portfolio. Do not give financial advice or make any specific investment recommendations. Ensure your response is in the specified JSON format.`;
+        const schema={type:"ARRAY",items:{type:"OBJECT",properties:{"ticker":{"type":"STRING"},"name":{"type":"STRING"},"rationale":{"type":"STRING"}},required:["ticker","name","rationale"]}};
+        try{const payload={contents:[{role:"user",parts:[{text:prompt}]}],generationConfig:{responseMimeType:"application/json",responseSchema:schema}};const apiKey="";const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!response.ok){const errD=await response.json();console.error('Gemini API Diversification Err:',errD);throw new Error(`API req failed: ${response.status} ${errD?.error?.message||'Unknown'}`);}const result=await response.json();if(result.candidates?.[0]?.content?.parts?.[0]?.text){const suggestions=JSON.parse(result.candidates[0].content.parts[0].text);if(suggestions&&suggestions.length>0){let html='<ul class="space-y-3">';suggestions.forEach(sugg=>{html+=`<li class="p-3 border border-teal-300 rounded-md bg-teal-50 shadow-sm"><p class="font-semibold text-teal-700">${sugg.name} (${sugg.ticker})</p><p class="mt-1 text-xs text-teal-600">${sugg.rationale}</p></li>`;});html+='</ul>';domElements.diversificationSuggestionsContent.innerHTML=html;}else{domElements.diversificationSuggestionsContent.innerHTML='<p>No specific diversification suggestions could be generated at this time, or the AI determined the portfolio is already well-diversified with the available options.</p>';}}else{console.error('Unexpected API response for diversification:',result);throw new Error('Could not extract diversification suggestions.');}}catch(error){console.error('Err fetching diversification suggestions:',error);domElements.diversificationSuggestionsError.textContent=`Failed to load suggestions. ${error.message}. Try again.`;domElements.diversificationSuggestionsContent.innerHTML='';}finally{domElements.diversificationLoading.classList.add('hidden');domElements.diversificationSuggestionsCard.scrollIntoView({behavior:'smooth',block:'nearest'});}}
+
+    async function handleRefineProfileWithAi() {
+        if (!selectedBaseProfileKey) {
+            domElements.aiProfileRefinementError.textContent = "Please select a base ready-made profile first.";
+            return;
+        }
+        const userFocus = domElements.aiProfileRefinementInput.value.trim();
+        if (!userFocus) {
+            domElements.aiProfileRefinementError.textContent = "Please describe your focus or concern for the AI to consider.";
+            return;
+        }
+
+        domElements.aiProfileRefinementLoading.classList.remove('hidden');
+        domElements.aiProfileRefinementError.textContent = '';
+
+        const baseProfile = CONFIG.READY_MADE_PORTFOLIOS[selectedBaseProfileKey];
+        const baseSectors = CONFIG.GENERIC_EQUITY_SECTOR_PROFILE; // Percentages
+        const baseGeos = baseProfile.geographies; // Percentages
+
+        // Prepare current allocations as strings for the prompt
+        let baseSectorsString = "";
+        for(const sector in baseSectors) baseSectorsString += `${sector}: ${baseSectors[sector]}%, `;
+        baseSectorsString = baseSectorsString.slice(0, -2);
+
+        let baseGeosString = "";
+        for(const geo in baseGeos) baseGeosString += `${geo}: ${baseGeos[geo]}%, `;
+        baseGeosString = baseGeosString.slice(0, -2);
+        
+        const prompt = `You are a helpful financial assistant.
+The user has selected the "${baseProfile.name}" ready-made profile as a starting point.
+This base profile has the following allocations:
+Base Sector Allocations: ${baseSectorsString}.
+Base Geographic Allocations: ${baseGeosString}.
+
+The user has provided the following focus or concern: "${userFocus}".
+
+Based on the user's focus, please suggest adjusted percentage allocations for ALL of the following sectors: ${CONFIG.SECTORS.join(', ')}, and ALL of the following geographies: ${CONFIG.GEOGRAPHIES.join(', ')}.
+The sum of your suggested sector percentages MUST equal 100%.
+The sum of your suggested geographic percentages MUST equal 100%.
+Make reasonable adjustments to the base profile allocations based on the user's focus. Avoid drastic changes. For any category not directly impacted by the user's focus, try to maintain its original allocation or adjust it minimally to accommodate changes elsewhere while ensuring the total sums to 100.
+Do not give financial advice or make any specific investment recommendations.
+Return your response in the specified JSON format. Ensure all listed sectors and geographies are present in your response, even if their allocation is 0.`;
+
+        const sectorProperties = {};
+        CONFIG.SECTORS.forEach(sector => { sectorProperties[sector] = { "type": "NUMBER" }; });
+        const geoProperties = {};
+        CONFIG.GEOGRAPHIES.forEach(geo => { geoProperties[geo] = { "type": "NUMBER" }; });
+
+        const schema = {
+            type: "OBJECT",
+            properties: {
+                "adjustedSectors": {
+                    type: "OBJECT",
+                    properties: sectorProperties,
+                    required: CONFIG.SECTORS
+                },
+                "adjustedGeographies": {
+                    type: "OBJECT",
+                    properties: geoProperties,
+                    required: CONFIG.GEOGRAPHIES
+                }
+            },
+            required: ["adjustedSectors", "adjustedGeographies"]
+        };
+        
+        try {
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                generationConfig: { responseMimeType: "application/json", responseSchema: schema }
+            };
+            const apiKey = ""; // API key will be injected by the environment if needed
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Gemini API Profile Refinement Error:', errorData);
+                throw new Error(`API request failed: ${response.status} ${errorData?.error?.message || 'Unknown error'}`);
+            }
+            const result = await response.json();
+
+            if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                const refinedProfile = JSON.parse(result.candidates[0].content.parts[0].text);
+
+                // Validate the response
+                const sumSectors = round(Object.values(refinedProfile.adjustedSectors).reduce((sum, val) => sum + (parseFloat(val) || 0), 0), 0);
+                const sumGeos = round(Object.values(refinedProfile.adjustedGeographies).reduce((sum, val) => sum + (parseFloat(val) || 0), 0), 0);
+
+                if (sumSectors !== 100 || sumGeos !== 100) {
+                    throw new Error(`AI returned allocations that do not sum to 100%. Sectors: ${sumSectors}%, Geos: ${sumGeos}%. Please try again or adjust manually.`);
+                }
+                
+                // Populate the main input fields with AI suggestions
+                populateInputFields('sector', refinedProfile.adjustedSectors);
+                populateInputFields('geo', refinedProfile.adjustedGeographies);
+                
+                domElements.aiProfileRefinementSection.classList.add('hidden'); // Hide after successful refinement
+                selectedBaseProfileKey = null; // Reset selected base profile
+                // Scroll to the updated inputs
+                domElements.sectorInputsContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+
+            } else {
+                console.error('Unexpected API response for profile refinement:', result);
+                throw new Error('Could not extract refined profile from API response.');
+            }
+
+        } catch (error) {
+            console.error('Error refining profile with AI:', error);
+            domElements.aiProfileRefinementError.textContent = `Failed to refine profile. ${error.message}. Please try again or adjust manually.`;
+        } finally {
+            domElements.aiProfileRefinementLoading.classList.add('hidden');
+        }
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        domElements.profileButtons = document.querySelectorAll('.profile-btn');
+        domElements.indicatorCardHeaders = document.querySelectorAll('.indicator-header');
+        if (domElements.currentYearSpan) domElements.currentYearSpan.textContent = new Date().getFullYear();
+        
+        normalizeETFData();
+        generateInputFields(domElements.sectorInputsDiv, CONFIG.SECTORS, 'sector', () => updateTotalAllocation('sector'));
+        generateInputFields(domElements.geoInputsDiv, CONFIG.GEOGRAPHIES, 'geo', () => updateTotalAllocation('geo'));
+        
+        domElements.profileButtons.forEach(btn => btn.addEventListener('click', handleReadyMadeProfileClick));
+        domElements.generatePortfolioBtn.addEventListener('click', handleGeneratePortfolio);
+        domElements.recalculateInsightsBtn.addEventListener('click', handleRecalculatePortfolioInsights);
+        domElements.getAiInsightsBtn.addEventListener('click', handleGetAiInsights);
+        domElements.getDiversificationSuggestionsBtn.addEventListener('click', handleGetDiversificationSuggestions);
+        domElements.refineProfileWithAiBtn.addEventListener('click', handleRefineProfileWithAi); // Listener for new button
+        
+        domElements.indicatorCardHeaders.forEach(h => h.addEventListener('click', toggleIndicatorDetails));
+        updateTotalAllocation('sector'); updateTotalAllocation('geo');
+    });
+</script>
+</body>
+</html>
