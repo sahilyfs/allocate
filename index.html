@@ -177,27 +177,125 @@
             <div id="loadingIndicator" class="hidden text-center py-8"><div class="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-500"></div><p class="mt-3 text-lg font-medium">Optimizing your allocation...</p></div>
             <div id="noSolutionMessage" class="hidden card bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert"><p class="font-bold">No Suitable Portfolio Found</p><p>Adjust exposures or try again.</p></div>
             <div id="portfolioIndicators" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="card indicator-card"><div class="indicator-header cursor-pointer flex justify-between items-center"><div><h4 class="text-sm text-gray-500">Illustrative 1-Yr Return</h4><p id="indicatorReturn" class="text-2xl font-bold">-%</p></div><svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div><div class="details-content"><p class="text-sm text-gray-600 mb-2">Weighted avg 1-yr returns.</p><ul id="returnDetailsList" class="text-xs text-gray-500 space-y-1 details-list"></ul></div></div>
-                <div class="card indicator-card"><div class="indicator-header cursor-pointer flex justify-between items-center"><div><h4 class="text-sm text-gray-500">Avg. Expense Ratio</h4><p id="indicatorExpense" class="text-2xl font-bold">-%</p></div><svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div><div class="details-content"><p class="text-sm text-gray-600 mb-2">Weighted avg expense ratios.</p><ul id="expenseDetailsList" class="text-xs text-gray-500 space-y-1 details-list"></ul></div></div>
-                <div class="card indicator-card"><div class="indicator-header cursor-pointer flex justify-between items-center"><div><h4 class="text-sm text-gray-500">Sector Match Quality</h4><p id="indicatorSectorMatch" class="text-2xl font-bold">-</p><p id="indicatorSectorMatchDesc" class="text-xs text-gray-500">-</p></div><svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div><div class="details-content"><p class="text-sm text-gray-600 mb-1">Score: <code class="text-xs">100 - Eff. Avg. Dev.</code></p><p class="text-sm text-gray-600 mb-2">Eff. Avg. Dev. (Sectors): <span id="sectorEffectiveAvgDeviation" class="font-medium">-</span>% <span class="tooltip"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block ml-1 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" /></svg><span class="tooltiptext">(Σ|Actual% - Target%|) / 2</span></span></p><h5 class="text-xs font-semibold text-gray-700 mb-1">Individual Deviations:</h5><ul id="sectorDeviationsList" class="text-xs text-gray-500 space-y-1 details-list"></ul></div></div>
-                <div class="card indicator-card"><div class="indicator-header cursor-pointer flex justify-between items-center"><div><h4 class="text-sm text-gray-500">Geo. Match Quality</h4><p id="indicatorGeoMatch" class="text-2xl font-bold">-</p><p id="indicatorGeoMatchDesc" class="text-xs text-gray-500">-</p></div><svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></div><div class="details-content"><p class="text-sm text-gray-600 mb-1">Score: <code class="text-xs">100 - Eff. Avg. Dev.</code></p><p class="text-sm text-gray-600 mb-2">Eff. Avg. Dev. (Geo.): <span id="geoEffectiveAvgDeviation" class="font-medium">-</span>% <span class="tooltip"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block ml-1 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" /></svg><span class="tooltiptext">(Σ|Actual% - Target%|) / 2</span></span></p><h5 class="text-xs font-semibold text-gray-700 mb-1">Individual Deviations:</h5><ul id="geoDeviationsList" class="text-xs text-gray-500 space-y-1 details-list"></ul></div></div>
+                <div class="card indicator-card">
+                    <div class="indicator-header cursor-pointer flex justify-between items-center">
+                        <div>
+                            <h4 class="text-sm text-gray-500">Illustrative 1-Yr Return</h4>
+                            <p id="indicatorReturn" class="text-2xl font-bold">-%</p>
+                        </div>
+                        <svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="details-content">
+                        <p class="text-sm text-gray-600 mb-2">Weighted avg 1-yr returns.</p>
+                        <ul id="returnDetailsList" class="text-xs text-gray-500 space-y-1 details-list"></ul>
+                    </div>
+                </div>
+                <div class="card indicator-card">
+                    <div class="indicator-header cursor-pointer flex justify-between items-center">
+                        <div>
+                            <h4 class="text-sm text-gray-500">Avg. Expense Ratio</h4>
+                            <p id="indicatorExpense" class="text-2xl font-bold">-%</p>
+                        </div>
+                        <svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="details-content">
+                        <p class="text-sm text-gray-600 mb-2">Weighted avg expense ratios.</p>
+                        <ul id="expenseDetailsList" class="text-xs text-gray-500 space-y-1 details-list"></ul>
+                    </div>
+                </div>
+                <div class="card indicator-card">
+                    <div class="indicator-header cursor-pointer flex justify-between items-center">
+                        <div>
+                            <h4 class="text-sm text-gray-500">Sector Match Quality</h4>
+                            <p id="indicatorSectorMatch" class="text-2xl font-bold">-</p>
+                            <p id="indicatorSectorMatchDesc" class="text-xs text-gray-500">-</p>
+                        </div>
+                        <svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="details-content">
+                        <p class="text-sm text-gray-600 mb-1">Score: <code class="text-xs">100 - Eff. Avg. Dev.</code></p>
+                        <p class="text-sm text-gray-600 mb-2">Eff. Avg. Dev. (Sectors): <span id="sectorEffectiveAvgDeviation" class="font-medium">-</span>% 
+                            <span class="tooltip">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block ml-1 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" /></svg>
+                                <span class="tooltiptext">(Σ|Actual% - Target%|) / 2</span>
+                            </span>
+                        </p>
+                        <h5 class="text-xs font-semibold text-gray-700 mb-1">Individual Deviations:</h5>
+                        <ul id="sectorDeviationsList" class="text-xs text-gray-500 space-y-1 details-list"></ul>
+                    </div>
+                </div>
+                <div class="card indicator-card">
+                    <div class="indicator-header cursor-pointer flex justify-between items-center">
+                        <div>
+                            <h4 class="text-sm text-gray-500">Geo. Match Quality</h4>
+                            <p id="indicatorGeoMatch" class="text-2xl font-bold">-</p>
+                            <p id="indicatorGeoMatchDesc" class="text-xs text-gray-500">-</p>
+                        </div>
+                        <svg class="arrow-icon w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="details-content">
+                        <p class="text-sm text-gray-600 mb-1">Score: <code class="text-xs">100 - Eff. Avg. Dev.</code></p>
+                        <p class="text-sm text-gray-600 mb-2">Eff. Avg. Dev. (Geo.): <span id="geoEffectiveAvgDeviation" class="font-medium">-</span>% 
+                            <span class="tooltip">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block ml-1 text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" /></svg>
+                                <span class="tooltiptext">(Σ|Actual% - Target%|) / 2</span>
+                            </span>
+                        </p>
+                        <h5 class="text-xs font-semibold text-gray-700 mb-1">Individual Deviations:</h5>
+                        <ul id="geoDeviationsList" class="text-xs text-gray-500 space-y-1 details-list"></ul>
+                    </div>
+                </div>
             </div>
+
             <div id="etfCompositionSection" class="card">
                 <h3 class="text-lg font-semibold mb-3">ETF Composition</h3>
-                <div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ETF Name</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticker</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight (%)</th></tr></thead><tbody id="etfCompositionTableBody" class="bg-white divide-y divide-gray-200"></tbody></table></div>
-                <p class="mt-3 font-semibold">Total Weight: <span id="totalCompositionWeight">0</span>%</p><p id="compositionError" class="text-red-500 text-sm mt-1"></p>
-                <div class="flex flex-col sm:flex-row gap-2 mt-4"><button id="recalculateInsightsBtn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 flex-grow">Recalculate Portfolio Insights</button></div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ETF Name</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticker</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="etfCompositionTableBody" class="bg-white divide-y divide-gray-200">
+                            </tbody>
+                    </table>
+                </div>
+                <p class="mt-3 font-semibold">Total Weight: <span id="totalCompositionWeight">0</span>%</p>
+                <p id="compositionError" class="text-red-500 text-sm mt-1"></p>
+                <div class="flex flex-col sm:flex-row gap-2 mt-4">
+                    <button id="recalculateInsightsBtn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 flex-grow">Recalculate Portfolio Insights</button>
+                </div>
                 <div class="flex flex-col sm:flex-row gap-2 mt-3">
                     <button id="getAiInsightsBtn" class="bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 flex-grow">✨ Get AI Commentary</button>
                     <button id="getDiversificationSuggestionsBtn" class="bg-teal-500 hover:bg-teal-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 flex-grow">✨ Suggest Diversification ETFs</button>
                 </div>
-                <div class="mt-3">
+                 <div class="mt-3">
                      <button id="getDifferenceAnalysisBtn" class="bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 w-full sm:w-auto">✨ Analyze Allocation Differences</button>
                 </div>
             </div>
 
-            <div id="aiInsightsCard" class="card ai-feature-card ai-insights-card hidden mt-6"><h3 class="text-lg font-semibold mb-2 text-sky-800">✨ AI Portfolio Commentary</h3><div id="aiInsightsLoading" class="hidden text-center py-4"><div class="pulsing-dots inline-block"><span></span><span></span><span></span></div><p class="mt-2 text-sm text-sky-700">Generating commentary...</p></div><p id="aiInsightsContent" class="text-sm text-gray-700 leading-relaxed"></p><p id="aiInsightsError" class="text-sm text-red-600"></p></div>
-            <div id="diversificationSuggestionsCard" class="card ai-feature-card diversification-suggestions-card hidden mt-6"><h3 class="text-lg font-semibold mb-2 text-teal-800">✨ AI Diversification Suggestions</h3><div id="diversificationLoading" class="hidden text-center py-4"><div class="pulsing-dots inline-block"><span></span><span></span><span></span></div><p class="mt-2 text-sm text-teal-700">Generating diversification ideas...</p></div><div id="diversificationSuggestionsContent" class="text-sm text-gray-700 leading-relaxed"></div><p id="diversificationSuggestionsError" class="text-sm text-red-600"></p></div>
+            <div id="aiInsightsCard" class="card ai-feature-card ai-insights-card hidden mt-6">
+                <h3 class="text-lg font-semibold mb-2 text-sky-800">✨ AI Portfolio Commentary</h3>
+                <div id="aiInsightsLoading" class="hidden text-center py-4">
+                    <div class="pulsing-dots inline-block"><span></span><span></span><span></span></div>
+                    <p class="mt-2 text-sm text-sky-700">Generating commentary...</p>
+                </div>
+                <p id="aiInsightsContent" class="text-sm text-gray-700 leading-relaxed"></p>
+                <p id="aiInsightsError" class="text-sm text-red-600"></p>
+            </div>
+
+            <div id="diversificationSuggestionsCard" class="card ai-feature-card diversification-suggestions-card hidden mt-6">
+                <h3 class="text-lg font-semibold mb-2 text-teal-800">✨ AI Diversification Suggestions</h3>
+                <div id="diversificationLoading" class="hidden text-center py-4">
+                    <div class="pulsing-dots inline-block"><span></span><span></span><span></span></div>
+                    <p class="mt-2 text-sm text-teal-700">Generating diversification ideas...</p>
+                </div>
+                <div id="diversificationSuggestionsContent" class="text-sm text-gray-700 leading-relaxed">
+                    </div>
+                <p id="diversificationSuggestionsError" class="text-sm text-red-600"></p>
+            </div>
             
             <div id="aiDifferenceAnalysisCard" class="card ai-feature-card ai-difference-analysis-card hidden mt-6">
                 <h3 class="text-lg font-semibold mb-2 text-purple-800">✨ AI Analysis of Allocation Differences</h3>
@@ -222,79 +320,211 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                <div class="card"><h3 class="text-lg font-semibold mb-3">Sector Exposure Comparison</h3><div class="overflow-x-auto max-h-96"><table class="min-w-full divide-y divide-gray-200 text-sm"><thead class="bg-gray-50 sticky top-0"><tr><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th></tr></thead><tbody id="sectorComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody></table></div><div class="mt-4" style="height: 250px;"><canvas id="sectorDoughnutChart"></canvas></div></div>
-                <div class="card"><h3 class="text-lg font-semibold mb-3">Geographic Exposure Comparison</h3><div class="overflow-x-auto max-h-96"><table class="min-w-full divide-y divide-gray-200 text-sm"><thead class="bg-gray-50 sticky top-0"><tr><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Geography</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th></tr></thead><tbody id="geoComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody></table></div><div class="mt-4" style="height: 250px;"><canvas id="geoDoughnutChart"></canvas></div></div>
+                <div class="card">
+                    <h3 class="text-lg font-semibold mb-3">Sector Exposure Comparison</h3>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="min-w-full divide-y divide-gray-200 text-sm">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sectorComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4" style="height: 250px;"><canvas id="sectorDoughnutChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 class="text-lg font-semibold mb-3">Geographic Exposure Comparison</h3>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="min-w-full divide-y divide-gray-200 text-sm">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Geography</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="geoComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4" style="height: 250px;"><canvas id="geoDoughnutChart"></canvas></div>
+                </div>
             </div>
         </section>
     </main>
-    <footer class="text-center py-6 text-sm text-gray-500"><p>&copy; <span id="currentYear"></span> AlloCate. Illustrative purposes only.</p></footer>
+
+    <footer class="text-center py-6 text-sm text-gray-500">
+        <p>&copy; <span id="currentYear"></span> AlloCate. Illustrative purposes only.</p>
+    </footer>
 
 <script>
+    // --- CONFIGURATION CONSTANTS ---
     const CONFIG = { 
         SECTORS: ['Information Technology', 'Health Care', 'Financials', 'Consumer Discretionary', 'Communication Services', 'Industrials', 'Consumer Staples', 'Energy', 'Utilities', 'Real Estate', 'Materials'],
         GEOGRAPHIES: ['North America', 'Europe (Developed)', 'Asia Pacific (Developed)', 'Emerging Markets'],
-        GENERIC_EQUITY_SECTOR_PROFILE: {'Information Technology': 22, 'Health Care': 14, 'Financials': 18, 'Consumer Discretionary': 11, 'Communication Services': 7, 'Industrials': 9, 'Consumer Staples': 6, 'Energy': 4, 'Utilities': 2, 'Real Estate': 2, 'Materials': 5 },
-        DEFAULT_AI_BASE_PROFILE: { 
+        // GENERIC_EQUITY_SECTOR_PROFILE is removed as each ready-made profile now defines its own sectors.
+        DEFAULT_AI_BASE_PROFILE: { // Default profile for AI refinement if no ready-made is selected
             name: "Default Balanced",
-            sectors: {'Information Technology': 22, 'Health Care': 14, 'Financials': 18, 'Consumer Discretionary': 11, 'Communication Services': 7, 'Industrials': 9, 'Consumer Staples': 6, 'Energy': 4, 'Utilities': 2, 'Real Estate': 2, 'Materials': 5 },
-            geographies: { 'North America': 32, 'Europe (Developed)': 14, 'Asia Pacific (Developed)': 48, 'Emerging Markets': 6 }
+            sectors: { // A sample balanced sector profile
+                'Information Technology': 18, 'Health Care': 14, 'Financials': 15, 'Consumer Discretionary': 11, 
+                'Communication Services': 8, 'Industrials': 10, 'Consumer Staples': 8, 'Energy': 6, 
+                'Utilities': 4, 'Real Estate': 3, 'Materials': 3 
+            },
+            geographies: { // A sample balanced geographic profile
+                'North America': 40, 'Europe (Developed)': 20, 'Asia Pacific (Developed)': 30, 'Emerging Markets': 10
+            }
         },
-        READY_MADE_PORTFOLIOS: {
-            vdco: { name: "Conservative", geographies: { 'North America': 32, 'Europe (Developed)': 13, 'Asia Pacific (Developed)': 48, 'Emerging Markets': 7 } },
-            vdba: { name: "Balanced", geographies: { 'North America': 32, 'Europe (Developed)': 14, 'Asia Pacific (Developed)': 48, 'Emerging Markets': 6 } },
-            vdgr: { name: "Growth", geographies: { 'North America': 32, 'Europe (Developed)': 14, 'Asia Pacific (Developed)': 48, 'Emerging Markets': 6 } },
-            vdhg: { name: "High Growth", geographies: { 'North America': 33, 'Europe (Developed)': 14, 'Asia Pacific (Developed)': 47, 'Emerging Markets': 6 } }
+        READY_MADE_PORTFOLIOS: { // Predefined portfolios users can start with - Updated with distinct allocations
+            vdco: { 
+                name: "Conservative", 
+                sectors: { 
+                    'Information Technology': 10, 'Health Care': 15, 'Financials': 15, 'Consumer Discretionary': 8, 
+                    'Communication Services': 7, 'Industrials': 10, 'Consumer Staples': 12, 'Energy': 5, 
+                    'Utilities': 8, 'Real Estate': 5, 'Materials': 5 
+                },
+                geographies: { 
+                    'North America': 30, 'Europe (Developed)': 15, 'Asia Pacific (Developed)': 45, 'Emerging Markets': 10 
+                } 
+            },
+            vdba: { 
+                name: "Balanced", 
+                sectors: { 
+                    'Information Technology': 15, 'Health Care': 14, 'Financials': 16, 'Consumer Discretionary': 10, 
+                    'Communication Services': 8, 'Industrials': 10, 'Consumer Staples': 8, 'Energy': 6, 
+                    'Utilities': 4, 'Real Estate': 4, 'Materials': 5 
+                },
+                geographies: { 
+                    'North America': 40, 'Europe (Developed)': 20, 'Asia Pacific (Developed)': 30, 'Emerging Markets': 10 
+                } 
+            },
+            vdgr: { 
+                name: "Growth", 
+                sectors: { 
+                    'Information Technology': 20, 'Health Care': 15, 'Financials': 14, 'Consumer Discretionary': 12, 
+                    'Communication Services': 9, 'Industrials': 9, 'Consumer Staples': 6, 'Energy': 6, 
+                    'Utilities': 3, 'Real Estate': 3, 'Materials': 3 
+                },
+                geographies: { 
+                    'North America': 45, 'Europe (Developed)': 15, 'Asia Pacific (Developed)': 25, 'Emerging Markets': 15 
+                } 
+            },
+            vdhg: { 
+                name: "High Growth", 
+                sectors: { 
+                    'Information Technology': 25, 'Health Care': 14, 'Financials': 12, 'Consumer Discretionary': 14, 
+                    'Communication Services': 10, 'Industrials': 8, 'Consumer Staples': 4, 'Energy': 5, 
+                    'Utilities': 2, 'Real Estate': 3, 'Materials': 3 
+                },
+                geographies: { 
+                    'North America': 50, 'Europe (Developed)': 15, 'Asia Pacific (Developed)': 20, 'Emerging Markets': 15 
+                } 
+            }
         },
-        MAX_ETFS_IN_PORTFOLIO: 3, WEIGHT_STEP: 0.05,
-        CHART_COLORS: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6366F1', '#0EA5E9', '#FCD34D', '#A78BFA', '#2DD4BF'],
-        CHART_FILTER_THRESHOLD: 0.001
+        MAX_ETFS_IN_PORTFOLIO: 3, // Maximum number of ETFs to combine in the optimization
+        WEIGHT_STEP: 0.05, // Step for ETF weight iteration (e.g., 0.05 = 5%)
+        CHART_COLORS: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6366F1', '#0EA5E9', '#FCD34D', '#A78BFA', '#2DD4BF'], // Colors for doughnut charts
+        CHART_FILTER_THRESHOLD: 0.001 // Allocations below this (0.1%) won't be shown in charts to avoid clutter
     };
-    const RAW_VANGUARD_ETFS = [ 
-        { name: "Vanguard Aus Shares Index ETF", ticker: "VAS", expenseRatio: 0.0007, y1_return: 0.085, sectors: { 'Financials': 0.30, 'Materials': 0.20, 'Health Care': 0.10, 'Industrials': 0.08, 'Consumer Discretionary': 0.07, 'Real Estate': 0.07, 'Energy': 0.05, 'Utilities': 0.04, 'Communication Services': 0.03, 'Information Technology': 0.03, 'Consumer Staples': 0.03 }, geographies: { 'North America': 0, 'Europe (Developed)': 0, 'Asia Pacific (Developed)': 1.0, 'Emerging Markets': 0 } },
-        { name: "Vanguard Intl Shares Index ETF", ticker: "VGS", expenseRatio: 0.0018, y1_return: 0.122, sectors: { 'Information Technology': 0.25, 'Financials': 0.15, 'Health Care': 0.13, 'Industrials': 0.10, 'Consumer Discretionary': 0.12, 'Communication Services': 0.08, 'Consumer Staples': 0.07, 'Materials': 0.04, 'Energy': 0.03, 'Utilities': 0.02, 'Real Estate': 0.01 }, geographies: { 'North America': 0.70, 'Europe (Developed)': 0.20, 'Asia Pacific (Developed)': 0.10, 'Emerging Markets': 0 } },
-        { name: "Vanguard Emerging Mkts ETF", ticker: "VGE", expenseRatio: 0.0048, y1_return: 0.051, sectors: { 'Financials': 0.22, 'Information Technology': 0.20, 'Consumer Discretionary': 0.15, 'Communication Services': 0.10, 'Materials': 0.08, 'Industrials': 0.07, 'Energy': 0.06, 'Consumer Staples': 0.05, 'Health Care': 0.04, 'Utilities': 0.02, 'Real Estate': 0.01 }, geographies: { 'North America': 0, 'Europe (Developed)': 0, 'Asia Pacific (Developed)': 0.15, 'Emerging Markets': 0.85 } },
-        { name: "Vanguard Info Tech ETF", ticker: "VGT", expenseRatio: 0.0010, y1_return: 0.255, sectors: { 'Information Technology': 0.85, 'Communication Services': 0.10, 'Industrials': 0.03, 'Financials': 0.02 }, geographies: { 'North America': 0.95, 'Europe (Developed)': 0.03, 'Asia Pacific (Developed)': 0.02 } }, 
-        { name: "Vanguard Health Care ETF", ticker: "VHT", expenseRatio: 0.0010, y1_return: 0.098, sectors: { 'Health Care': 0.90, 'Information Technology': 0.05, 'Industrials': 0.03, 'Financials': 0.02 }, geographies: { 'North America': 0.96, 'Europe (Developed)': 0.02, 'Asia Pacific (Developed)': 0.01, 'Emerging Markets': 0.01 } },
-        { name: "Vanguard Global Value ETF", ticker: "VVLU", expenseRatio: 0.0022, y1_return: 0.115, sectors: { 'Financials': 0.25, 'Health Care': 0.15, 'Industrials': 0.12, 'Energy': 0.10, 'Consumer Staples': 0.09, 'Utilities': 0.08, 'Information Technology': 0.07, 'Materials': 0.06, 'Communication Services': 0.04, 'Consumer Discretionary': 0.03, 'Real Estate': 0.01}, geographies: { 'North America': 0.50, 'Europe (Developed)': 0.30, 'Asia Pacific (Developed)': 0.15, 'Emerging Markets': 0.05 } }
-    ];
-    let vanguardETFs = [], originalTargetSectors = {}, originalTargetGeographies = {}, currentPortfolio = null, sectorChartInstance = null, geoChartInstance = null;
-    let selectedBaseProfileKey = null; 
 
+    // --- RAW ETF DATA (Normally from a database or API) ---
+    const RAW_VANGUARD_ETFS = [ 
+        // Australian Equities
+        { name: "Vanguard Aus Shares Index ETF", ticker: "VAS", expenseRatio: 0.0007, y1_return: 0.085, 
+          sectors: { 'Financials': 0.30, 'Materials': 0.20, 'Health Care': 0.10, 'Industrials': 0.08, 'Consumer Discretionary': 0.07, 'Real Estate': 0.07, 'Energy': 0.05, 'Utilities': 0.04, 'Communication Services': 0.03, 'Information Technology': 0.03, 'Consumer Staples': 0.03 }, 
+          geographies: { 'North America': 0, 'Europe (Developed)': 0, 'Asia Pacific (Developed)': 1.0, 'Emerging Markets': 0 } },
+        // International Equities (Developed Markets)
+        { name: "Vanguard Intl Shares Index ETF", ticker: "VGS", expenseRatio: 0.0018, y1_return: 0.122, 
+          sectors: { 'Information Technology': 0.25, 'Financials': 0.15, 'Health Care': 0.13, 'Industrials': 0.10, 'Consumer Discretionary': 0.12, 'Communication Services': 0.08, 'Consumer Staples': 0.07, 'Materials': 0.04, 'Energy': 0.03, 'Utilities': 0.02, 'Real Estate': 0.01 }, 
+          geographies: { 'North America': 0.70, 'Europe (Developed)': 0.20, 'Asia Pacific (Developed)': 0.10, 'Emerging Markets': 0 } },
+        // Emerging Market Equities
+        { name: "Vanguard Emerging Mkts ETF", ticker: "VGE", expenseRatio: 0.0048, y1_return: 0.051, 
+          sectors: { 'Financials': 0.22, 'Information Technology': 0.20, 'Consumer Discretionary': 0.15, 'Communication Services': 0.10, 'Materials': 0.08, 'Industrials': 0.07, 'Energy': 0.06, 'Consumer Staples': 0.05, 'Health Care': 0.04, 'Utilities': 0.02, 'Real Estate': 0.01 }, 
+          geographies: { 'North America': 0, 'Europe (Developed)': 0, 'Asia Pacific (Developed)': 0.15, 'Emerging Markets': 0.85 } },
+        // Sector Specific ETFs
+        { name: "Vanguard Info Tech ETF", ticker: "VGT", expenseRatio: 0.0010, y1_return: 0.255, 
+          sectors: { 'Information Technology': 0.85, 'Communication Services': 0.10, 'Industrials': 0.03, 'Financials': 0.02 }, 
+          geographies: { 'North America': 0.95, 'Europe (Developed)': 0.03, 'Asia Pacific (Developed)': 0.02 } }, 
+        { name: "Vanguard Health Care ETF", ticker: "VHT", expenseRatio: 0.0010, y1_return: 0.098, 
+          sectors: { 'Health Care': 0.90, 'Information Technology': 0.05, 'Industrials': 0.03, 'Financials': 0.02 }, 
+          geographies: { 'North America': 0.96, 'Europe (Developed)': 0.02, 'Asia Pacific (Developed)': 0.01, 'Emerging Markets': 0.01 } },
+        // Factor/Style ETF
+        { name: "Vanguard Global Value ETF", ticker: "VVLU", expenseRatio: 0.0022, y1_return: 0.115, 
+          sectors: { 'Financials': 0.25, 'Health Care': 0.15, 'Industrials': 0.12, 'Energy': 0.10, 'Consumer Staples': 0.09, 'Utilities': 0.08, 'Information Technology': 0.07, 'Materials': 0.06, 'Communication Services': 0.04, 'Consumer Discretionary': 0.03, 'Real Estate': 0.01}, 
+          geographies: { 'North America': 0.50, 'Europe (Developed)': 0.30, 'Asia Pacific (Developed)': 0.15, 'Emerging Markets': 0.05 } }
+    ];
+
+    // --- GLOBAL VARIABLES ---
+    let vanguardETFs = []; // Will hold normalized ETF data
+    let originalTargetSectors = {}; // User's desired sector allocations (decimal)
+    let originalTargetGeographies = {}; // User's desired geographic allocations (decimal)
+    let currentPortfolio = null; // Holds the latest generated portfolio object
+    let sectorChartInstance = null; // Chart.js instance for sector doughnut
+    let geoChartInstance = null; // Chart.js instance for geo doughnut
+    let selectedBaseProfileKey = null; // Key of the currently selected ready-made profile (e.g., 'vdba')
+
+    // --- DOM ELEMENT REFERENCES ---
     const domElements = {
-        profileButtons: null, sectorInputsContainer: document.getElementById('sectorInputsContainer'), sectorInputsDiv: document.getElementById('sectorInputs'),
-        totalSectorAllocationSpan: document.getElementById('totalSectorAllocation'), sectorErrorP: document.getElementById('sectorError'),
-        geoInputsContainer: document.getElementById('geoInputsContainer'), geoInputsDiv: document.getElementById('geoInputs'),
-        totalGeoAllocationSpan: document.getElementById('totalGeoAllocation'), geoErrorP: document.getElementById('geoError'),
-        generatePortfolioBtn: document.getElementById('generatePortfolioBtn'), formErrorMessageP: document.getElementById('formErrorMessage'),
-        userInputSection: document.getElementById('userInputSection'), resultsSection: document.getElementById('resultsSection'),
-        loadingIndicatorDiv: document.getElementById('loadingIndicator'), noSolutionMessageDiv: document.getElementById('noSolutionMessage'),
-        portfolioIndicatorsDiv: document.getElementById('portfolioIndicators'), indicatorReturnP: document.getElementById('indicatorReturn'),
-        returnDetailsListUl: document.getElementById('returnDetailsList'), indicatorExpenseP: document.getElementById('indicatorExpense'),
-        expenseDetailsListUl: document.getElementById('expenseDetailsList'), indicatorSectorMatchP: document.getElementById('indicatorSectorMatch'),
-        indicatorSectorMatchDescP: document.getElementById('indicatorSectorMatchDesc'), sectorEffectiveAvgDeviationSpan: document.getElementById('sectorEffectiveAvgDeviation'),
-        sectorDeviationsListUl: document.getElementById('sectorDeviationsList'), indicatorGeoMatchP: document.getElementById('indicatorGeoMatch'),
-        indicatorGeoMatchDescP: document.getElementById('indicatorGeoMatchDesc'), geoEffectiveAvgDeviationSpan: document.getElementById('geoEffectiveAvgDeviation'),
-        geoDeviationsListUl: document.getElementById('geoDeviationsList'), indicatorCardHeaders: null, 
-        etfCompositionSectionDiv: document.getElementById('etfCompositionSection'), etfCompositionTableBody: document.getElementById('etfCompositionTableBody'),
-        totalCompositionWeightSpan: document.getElementById('totalCompositionWeight'), compositionErrorP: document.getElementById('compositionError'),
-        recalculateInsightsBtn: document.getElementById('recalculateInsightsBtn'), getAiInsightsBtn: document.getElementById('getAiInsightsBtn'),
-        getDiversificationSuggestionsBtn: document.getElementById('getDiversificationSuggestionsBtn'), 
-        getDifferenceAnalysisBtn: document.getElementById('getDifferenceAnalysisBtn'), 
-        aiInsightsCard: document.getElementById('aiInsightsCard'), aiInsightsLoading: document.getElementById('aiInsightsLoading'),
-        aiInsightsContent: document.getElementById('aiInsightsContent'), aiInsightsError: document.getElementById('aiInsightsError'),
-        diversificationSuggestionsCard: document.getElementById('diversificationSuggestionsCard'), 
-        diversificationLoading: document.getElementById('diversificationLoading'), 
-        diversificationSuggestionsContent: document.getElementById('diversificationSuggestionsContent'), 
-        diversificationSuggestionsError: document.getElementById('diversificationSuggestionsError'), 
-        aiDifferenceAnalysisCard: document.getElementById('aiDifferenceAnalysisCard'), 
-        aiDifferenceAnalysisLoading: document.getElementById('aiDifferenceAnalysisLoading'), 
-        sectorDifferenceExplanation: document.getElementById('sectorDifferenceExplanation'), 
-        sectorDifferenceSuggestions: document.getElementById('sectorDifferenceSuggestions'), 
-        geographicDifferenceExplanation: document.getElementById('geographicDifferenceExplanation'), 
-        geographicDifferenceSuggestions: document.getElementById('geographicDifferenceSuggestions'), 
-        aiDifferenceAnalysisError: document.getElementById('aiDifferenceAnalysisError'), 
-        sectorComparisonTableBody: document.getElementById('sectorComparisonTableBody'), sectorDoughnutChartCanvas: document.getElementById('sectorDoughnutChart'),
-        geoComparisonTableBody: document.getElementById('geoComparisonTableBody'), geoDoughnutChartCanvas: document.getElementById('geoDoughnutChart'),
+        profileButtons: null, 
+        sectorInputsContainer: document.getElementById('sectorInputsContainer'),
+        sectorInputsDiv: document.getElementById('sectorInputs'),
+        totalSectorAllocationSpan: document.getElementById('totalSectorAllocation'),
+        sectorErrorP: document.getElementById('sectorError'),
+        geoInputsContainer: document.getElementById('geoInputsContainer'),
+        geoInputsDiv: document.getElementById('geoInputs'),
+        totalGeoAllocationSpan: document.getElementById('totalGeoAllocation'),
+        geoErrorP: document.getElementById('geoError'),
+        generatePortfolioBtn: document.getElementById('generatePortfolioBtn'),
+        formErrorMessageP: document.getElementById('formErrorMessage'),
+        userInputSection: document.getElementById('userInputSection'),
+        resultsSection: document.getElementById('resultsSection'),
+        loadingIndicatorDiv: document.getElementById('loadingIndicator'),
+        noSolutionMessageDiv: document.getElementById('noSolutionMessage'),
+        portfolioIndicatorsDiv: document.getElementById('portfolioIndicators'),
+        indicatorReturnP: document.getElementById('indicatorReturn'),
+        returnDetailsListUl: document.getElementById('returnDetailsList'),
+        indicatorExpenseP: document.getElementById('indicatorExpense'),
+        expenseDetailsListUl: document.getElementById('expenseDetailsList'),
+        indicatorSectorMatchP: document.getElementById('indicatorSectorMatch'),
+        indicatorSectorMatchDescP: document.getElementById('indicatorSectorMatchDesc'),
+        sectorEffectiveAvgDeviationSpan: document.getElementById('sectorEffectiveAvgDeviation'),
+        sectorDeviationsListUl: document.getElementById('sectorDeviationsList'),
+        indicatorGeoMatchP: document.getElementById('indicatorGeoMatch'),
+        indicatorGeoMatchDescP: document.getElementById('indicatorGeoMatchDesc'),
+        geoEffectiveAvgDeviationSpan: document.getElementById('geoEffectiveAvgDeviation'),
+        geoDeviationsListUl: document.getElementById('geoDeviationsList'),
+        indicatorCardHeaders: null, 
+        etfCompositionSectionDiv: document.getElementById('etfCompositionSection'),
+        etfCompositionTableBody: document.getElementById('etfCompositionTableBody'),
+        totalCompositionWeightSpan: document.getElementById('totalCompositionWeight'),
+        compositionErrorP: document.getElementById('compositionError'),
+        recalculateInsightsBtn: document.getElementById('recalculateInsightsBtn'),
+        getAiInsightsBtn: document.getElementById('getAiInsightsBtn'),
+        getDiversificationSuggestionsBtn: document.getElementById('getDiversificationSuggestionsBtn'),
+        getDifferenceAnalysisBtn: document.getElementById('getDifferenceAnalysisBtn'),
+        aiInsightsCard: document.getElementById('aiInsightsCard'),
+        aiInsightsLoading: document.getElementById('aiInsightsLoading'),
+        aiInsightsContent: document.getElementById('aiInsightsContent'),
+        aiInsightsError: document.getElementById('aiInsightsError'),
+        diversificationSuggestionsCard: document.getElementById('diversificationSuggestionsCard'),
+        diversificationLoading: document.getElementById('diversificationLoading'),
+        diversificationSuggestionsContent: document.getElementById('diversificationSuggestionsContent'),
+        diversificationSuggestionsError: document.getElementById('diversificationSuggestionsError'),
+        aiDifferenceAnalysisCard: document.getElementById('aiDifferenceAnalysisCard'),
+        aiDifferenceAnalysisLoading: document.getElementById('aiDifferenceAnalysisLoading'),
+        sectorDifferenceExplanation: document.getElementById('sectorDifferenceExplanation'),
+        sectorDifferenceSuggestions: document.getElementById('sectorDifferenceSuggestions'),
+        geographicDifferenceExplanation: document.getElementById('geographicDifferenceExplanation'),
+        geographicDifferenceSuggestions: document.getElementById('geographicDifferenceSuggestions'),
+        aiDifferenceAnalysisError: document.getElementById('aiDifferenceAnalysisError'),
+        sectorComparisonTableBody: document.getElementById('sectorComparisonTableBody'),
+        sectorDoughnutChartCanvas: document.getElementById('sectorDoughnutChart'),
+        geoComparisonTableBody: document.getElementById('geoComparisonTableBody'),
+        geoDoughnutChartCanvas: document.getElementById('geoDoughnutChart'),
         currentYearSpan: document.getElementById('currentYear'),
         aiProfileRefinementSection: document.getElementById('aiProfileRefinementSection'),
         baseProfileInfoSpan: document.getElementById('baseProfileInfo'),
@@ -306,13 +536,17 @@
         aiProfileRefinementRationale: document.getElementById('aiProfileRefinementRationale'),
     };
 
+    // --- UTILITY FUNCTIONS ---
     const round = (num, places = 2) => parseFloat(num.toFixed(places));
     const formatPercent = (decimal, places = 2) => `${round(decimal * 100, places)}%`;
 
+    // --- INITIALIZATION FUNCTIONS ---
     function normalizeETFData() { 
         vanguardETFs = RAW_VANGUARD_ETFS.map(etf => {
-            const normalizedSectors = {}; CONFIG.SECTORS.forEach(s => normalizedSectors[s] = etf.sectors[s] || 0);
-            const normalizedGeographies = {}; CONFIG.GEOGRAPHIES.forEach(g => normalizedGeographies[g] = etf.geographies[g] || 0);
+            const normalizedSectors = {};
+            CONFIG.SECTORS.forEach(s => normalizedSectors[s] = etf.sectors[s] || 0);
+            const normalizedGeographies = {};
+            CONFIG.GEOGRAPHIES.forEach(g => normalizedGeographies[g] = etf.geographies[g] || 0);
             CONFIG.SECTORS.forEach(s => { if(!(s in normalizedSectors)) normalizedSectors[s] = 0; });
             CONFIG.GEOGRAPHIES.forEach(g => { if(!(g in normalizedGeographies)) normalizedGeographies[g] = 0; });
             return { ...etf, sectors: normalizedSectors, geographies: normalizedGeographies };
@@ -322,9 +556,18 @@
     function generateInputFields(container, items, type, onUpdateCallback) { 
         container.innerHTML = ''; 
         items.forEach(item => {
-            const div = document.createElement('div'); div.className = 'flex items-center justify-between';
-            const label = document.createElement('label'); label.htmlFor = `${type}-${item.replace(/\s+/g, '-')}`; label.textContent = `${item}:`; label.className = 'text-sm font-medium text-gray-700 mr-2 whitespace-nowrap';
-            const input = document.createElement('input'); input.type = 'number'; input.id = `${type}-${item.replace(/\s+/g, '-')}`; input.name = item; input.min = 0; input.max = 100; input.step = 1; input.className = 'input-field w-24 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm'; 
+            const div = document.createElement('div');
+            div.className = 'flex items-center justify-between';
+            const label = document.createElement('label');
+            label.htmlFor = `${type}-${item.replace(/\s+/g, '-')}`; 
+            label.textContent = `${item}:`;
+            label.className = 'text-sm font-medium text-gray-700 mr-2 whitespace-nowrap';
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = `${type}-${item.replace(/\s+/g, '-')}`;
+            input.name = item; 
+            input.min = 0; input.max = 100; input.step = 1;
+            input.className = 'input-field w-24 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm'; 
             input.addEventListener('input', () => {
                 onUpdateCallback();
                 selectedBaseProfileKey = null; 
@@ -335,25 +578,38 @@
             div.appendChild(label); div.appendChild(input); container.appendChild(div);
         });
     }
+
     function updateTotalAllocation(type) { 
-        const inputs = domElements[`${type}InputsDiv`].querySelectorAll('input'); let total = 0;
-        inputs.forEach(input => total += parseFloat(input.value) || 0);
+        const inputs = domElements[`${type}InputsDiv`].querySelectorAll('input');
+        let total = 0;
+        inputs.forEach(input => total += parseFloat(input.value) || 0); 
         domElements[`total${type.charAt(0).toUpperCase() + type.slice(1)}AllocationSpan`].textContent = round(total, 0);
         const errorEl = domElements[`${type}ErrorP`];
         errorEl.textContent = (total !== 0 && total !== 100) ? 'Total must be 100%.' : '';
         return total;
     }
+
     function populateInputFields(type, values) { 
         const inputs = domElements[`${type}InputsDiv`].querySelectorAll('input');
-        inputs.forEach(input => input.value = values[input.name] !== undefined ? round(values[input.name], 0) : 0);
-        updateTotalAllocation(type);
+        inputs.forEach(input => {
+            input.value = values[input.name] !== undefined ? round(values[input.name], 0) : ''; 
+        });
+        updateTotalAllocation(type); 
     }
+
     function handleReadyMadeProfileClick(event) { 
         selectedBaseProfileKey = event.target.dataset.profile; 
         if (!selectedBaseProfileKey || !CONFIG.READY_MADE_PORTFOLIOS[selectedBaseProfileKey]) return;
         const profile = CONFIG.READY_MADE_PORTFOLIOS[selectedBaseProfileKey];
-        populateInputFields('sector', CONFIG.GENERIC_EQUITY_SECTOR_PROFILE); 
+        
+        // Now populates sectors from the profile itself, not a generic one
+        if (profile.sectors) { // Check if sectors are defined in the profile
+            populateInputFields('sector', profile.sectors); 
+        } else { // Fallback or clear if not defined (though they should be with new structure)
+            populateInputFields('sector', {}); // Clears fields if no sectors defined
+        }
         populateInputFields('geo', profile.geographies);
+
         domElements.selectedBaseProfileNameSpan.textContent = profile.name;
         domElements.baseProfileInfoSpan.classList.remove('hidden');
         domElements.aiProfileRefinementInput.value = ''; 
@@ -363,6 +619,8 @@
         domElements.aiProfileRefinementLoading.classList.add('hidden');
         setTimeout(() => domElements.aiProfileRefinementSection.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
     }
+
+    // --- PORTFOLIO OPTIMIZATION LOGIC ---
     async function findBestPortfolio(targetSectors, targetGeographies) { 
         return new Promise(resolve => {
             setTimeout(() => { 
@@ -373,11 +631,15 @@
                         const weightsIterator = generateWeightCombinations(k, CONFIG.WEIGHT_STEP);
                         for (const weights of weightsIterator) {
                             if (weights.reduce((s, w) => s + w, 0) > 1.0001) continue; 
-                            const { actualSectors, actualGeographies, sectorSumAbsDiff, geoSumAbsDiff } = calculatePortfolioMetricsInternal(etfCombination, weights, targetSectors, targetGeographies);
+                            const { actualSectors, actualGeographies, sectorSumAbsDiff, geoSumAbsDiff } = 
+                                calculatePortfolioMetricsInternal(etfCombination, weights, targetSectors, targetGeographies);
                             const combinedError = sectorSumAbsDiff + geoSumAbsDiff;
                             if (combinedError < minCombinedError) {
                                 minCombinedError = combinedError;
-                                bestPortfolio = { etfs: etfCombination.map((etf, i) => ({ ...etf, weight: weights[i] })), actualSectors, actualGeographies, sectorSumAbsDiff, geoSumAbsDiff, combinedError };
+                                bestPortfolio = {
+                                    etfs: etfCombination.map((etf, i) => ({ ...etf, weight: weights[i] })),
+                                    actualSectors, actualGeographies, sectorSumAbsDiff, geoSumAbsDiff, combinedError
+                                };
                             }
                         }
                     }
@@ -386,11 +648,14 @@
             }, 50); 
         });
     }
+
     function getCombinations(arr, k) { if (k === 0) return [[]]; if (arr.length === 0) return []; const first = arr[0], rest = arr.slice(1); const combsWithoutFirst = getCombinations(rest, k), combsWithFirst = getCombinations(rest, k - 1).map(comb => [first, ...comb]); return [...combsWithFirst, ...combsWithoutFirst]; }
     function* generateWeightCombinations(numEtfs, step) { const numSteps = Math.round(1/step); if (numEtfs===1) yield [1.0]; else if (numEtfs===2) for(let i=0;i<=numSteps;i++){const w1=i*step,w2=1.0-w1;if(w2>=-0.0001)yield [round(w1,4),round(w2,4)];} else if (numEtfs===3) for(let i=0;i<=numSteps;i++){const w1=i*step;for(let j=0;j<=numSteps-i;j++){const w2=j*step,w3=1.0-w1-w2;if(w3>=-0.0001)yield [round(w1,4),round(w2,4),round(w3,4)];}}}
     function calculatePortfolioMetricsInternal(etfSel, weights, targetS, targetG) { const actualS={},actualG={};CONFIG.SECTORS.forEach(s=>actualS[s]=0);CONFIG.GEOGRAPHIES.forEach(g=>actualG[g]=0);etfSel.forEach((etf,idx)=>{const w=weights[idx];CONFIG.SECTORS.forEach(s=>actualS[s]+=(etf.sectors[s]||0)*w);CONFIG.GEOGRAPHIES.forEach(g=>actualG[g]+=(etf.geographies[g]||0)*w);});let sSumAD=0;CONFIG.SECTORS.forEach(s=>sSumAD+=Math.abs(actualS[s]-(targetS[s]||0)));let gSumAD=0;CONFIG.GEOGRAPHIES.forEach(g=>gSumAD+=Math.abs(actualG[g]-(targetG[g]||0)));return{actualSectors:actualS,actualGeographies:actualG,sectorSumAbsDiff:sSumAD,geoSumAbsDiff:gSumAD};}
+    
+    // --- UI DISPLAY FUNCTIONS ---
     function displayLoading(isLoading) { 
-        domElements.loadingIndicatorDiv.classList.toggle('hidden',!isLoading);
+        domElements.loadingIndicatorDiv.classList.toggle('hidden', !isLoading);
         domElements.loadingIndicatorDiv.querySelector('p').textContent=isLoading?'Optimizing allocation...':'Optimizing portfolio...';
         if(isLoading){
             domElements.resultsSection.classList.remove('hidden');domElements.noSolutionMessageDiv.classList.add('hidden');
@@ -424,11 +689,11 @@
     function updateComparisonTable(tbody,categories,desiredMap,actualMapDecimal,actualIsDecimal=true){tbody.innerHTML='';categories.forEach(cat=>{const desiredVal=desiredMap[cat]||0,actualVal=actualMapDecimal[cat]||0;const desiredP=desiredVal>1.5?desiredVal:desiredVal*100,actualP=actualIsDecimal?actualVal*100:actualVal;const diff=actualP-desiredP,row=tbody.insertRow();row.insertCell().textContent=cat;row.insertCell().textContent=round(desiredP);row.insertCell().textContent=round(actualP);const diffCell=row.insertCell();diffCell.textContent=round(diff);if(diff<-0.01)diffCell.classList.add('text-red-600');else if(diff>0.01)diffCell.classList.add('text-green-600');});}
     function createOrUpdateDoughnutChart(type,canvasEl,allLabels,dataMapDec,title){let chartInst=type==='sector'?sectorChartInstance:geoChartInstance;if(chartInst)chartInst.destroy();const filtLabels=[],filtData=[];allLabels.forEach(lbl=>{const val=dataMapDec[lbl]||0;if(val>=CONFIG.CHART_FILTER_THRESHOLD){filtLabels.push(lbl);filtData.push(round(val*100,2));}});const newCI=new Chart(canvasEl,{type:'doughnut',data:{labels:filtLabels,datasets:[{label:title,data:filtData,backgroundColor:CONFIG.CHART_COLORS,borderColor:'#fff',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:15,padding:10}},title:{display:true,text:title,font:{size:14,weight:'normal'}},tooltip:{callbacks:{label:ctx=>{let lbl=ctx.label||'';if(lbl)lbl+=': ';if(ctx.parsed!==null)lbl+=ctx.parsed+'%';return lbl;}}}}}});if(type==='sector')sectorChartInstance=newCI;else geoChartInstance=newCI;}
     
+    // --- EVENT HANDLERS ---
     async function handleGeneratePortfolio() {
         domElements.formErrorMessageP.textContent = '';
         domElements.aiProfileRefinementSection.classList.add('hidden'); 
         selectedBaseProfileKey = null;
-
         if (updateTotalAllocation('sector') !== 100 || updateTotalAllocation('geo') !== 100) { domElements.formErrorMessageP.textContent = 'Total sector and geographic allocations must each be 100%.'; domElements.userInputSection.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
         displayLoading(true); domElements.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         originalTargetSectors = {}; domElements.sectorInputsDiv.querySelectorAll('input').forEach(i => originalTargetSectors[i.name] = (parseFloat(i.value)||0)/100);
@@ -441,7 +706,6 @@
             updatePortfolioDisplay(currentPortfolio, origTSPerc, origTGPerc);
         } else displayNoSolution();
     }
-    
     function updateTotalCompositionWeight() {const inputs=domElements.etfCompositionTableBody.querySelectorAll('.etf-weight-input');let total=0;inputs.forEach(i=>total+=parseFloat(i.value)||0);domElements.totalCompositionWeightSpan.textContent=round(total,0);domElements.compositionErrorP.textContent=(total!==100&&total!==0)?'Total weight must be 100% to recalculate.':'';return total;}
     function handleRecalculatePortfolioInsights() {if(!currentPortfolio||!currentPortfolio.etfs||currentPortfolio.etfs.length===0){domElements.compositionErrorP.textContent='No portfolio to recalculate.';return;}const inputs=domElements.etfCompositionTableBody.querySelectorAll('.etf-weight-input');let newTotalWPerc=0;const newWeightsDec=[],etfDataRecalc=[];const currentEtfTickers=currentPortfolio.etfs.map(e=>e.ticker);currentEtfTickers.forEach(ticker=>{const etfFD=vanguardETFs.find(e=>e.ticker===ticker);if(!etfFD){console.error(`Data for ${ticker} missing.`);domElements.compositionErrorP.textContent=`Err: ${ticker} data missing.`;return;}const inputF=Array.from(inputs).find(inp=>inp.dataset.ticker===ticker);if(!inputF){console.error(`Weight for ${ticker} missing.`);domElements.compositionErrorP.textContent=`Err: ${ticker} weight missing.`;return;}const wPerc=parseFloat(inputF.value)||0;newTotalWPerc+=wPerc;newWeightsDec.push(wPerc/100);etfDataRecalc.push({...etfFD});});if(Math.abs(newTotalWPerc-100)>0.1){domElements.compositionErrorP.textContent='Total weight must be 100%.';return;}domElements.compositionErrorP.textContent='';const{actualSectors,actualGeographies,sectorSumAbsDiff,geoSumAbsDiff}=calculatePortfolioMetricsInternal(etfDataRecalc,newWeightsDec,originalTargetSectors,originalTargetGeographies);const recalcP={etfs:etfDataRecalc.map((e,i)=>({...e,weight:newWeightsDec[i]})),actualSectors,actualGeographies,sectorSumAbsDiff,geoSumAbsDiff};currentPortfolio=recalcP;const origTSPerc={},origTGPerc={};for(const k in originalTargetSectors)origTSPerc[k]=originalTargetSectors[k]*100;for(const k in originalTargetGeographies)origTGPerc[k]=originalTargetGeographies[k]*100;updatePortfolioDisplay(recalcP,origTSPerc,origTGPerc);domElements.resultsSection.scrollIntoView({behavior:'smooth',block:'start'});}
     function toggleIndicatorDetails(event){const h=event.currentTarget,c=h.nextElementSibling,a=h.querySelector('.arrow-icon');c.classList.toggle('open');a.classList.toggle('rotated');}
@@ -451,38 +715,16 @@
         domElements.aiInsightsCard.classList.remove('hidden');domElements.aiInsightsLoading.classList.remove('hidden');domElements.aiInsightsContent.textContent='';domElements.aiInsightsError.textContent='';domElements.diversificationSuggestionsCard.classList.add('hidden');domElements.aiDifferenceAnalysisCard.classList.add('hidden');
         let sDataStr="",gDataStr="";for(const s in currentPortfolio.actualSectors){const p=currentPortfolio.actualSectors[s]*100;if(p>0.1)sDataStr+=`${s}: ${round(p,1)}%, `;}sDataStr=sDataStr.slice(0,-2);for(const g in currentPortfolio.actualGeographies){const p=currentPortfolio.actualGeographies[g]*100;if(p>0.1)gDataStr+=`${g}: ${round(p,1)}%, `;}gDataStr=gDataStr.slice(0,-2);
         const promptTextForGemini=`You are a helpful financial assistant. Based on the following ETF portfolio's actual allocations, provide a brief (2-4 sentences) qualitative commentary. Discuss potential characteristics, strengths, or areas a user might want to consider further. Be balanced and objective. Do not give financial advice or make any specific investment recommendations. Actual Sector Allocations: ${sDataStr||'None significant'}. Actual Geographic Allocations: ${gDataStr||'None significant'}.`;
-        
         const geminiModel = "gemini-2.0-flash";
-        const geminiApiPayload = { 
-            contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }]
-        };
+        const geminiApiPayload = { contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }] };
         const proxyUrl = "/api/geminiProxy";
-
         try{
-            const response = await fetch(proxyUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload })
-            });
-            
+            const response = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload }) });
             const result = await response.json();
-
-            if(!response.ok){
-                const errorDetail = result?.error || `Proxy request failed with status ${response.status}`;
-                console.error('Error from proxy for AI insights:', result);
-                throw new Error(errorDetail);
-            }
-            if(result.candidates?.[0]?.content?.parts?.[0]?.text) {
-                domElements.aiInsightsContent.textContent = result.candidates[0].content.parts[0].text.trim();
-            } else {
-                console.error('Unexpected data structure from proxy/Gemini (Insights):', result);
-                throw new Error('Could not extract insights from API response via proxy.');
-            }
-        }catch(error){
-            console.error('Error fetching AI insights (via proxy):',error); 
-            const displayMessage = error instanceof Error && error.message ? error.message : String(error);
-            domElements.aiInsightsError.textContent=`Failed to load AI insights. ${displayMessage || 'An unexpected error occurred.'} Try again.`;
-            domElements.aiInsightsContent.textContent='';
+            if(!response.ok){ const errorDetail = result?.error || `Proxy request failed with status ${response.status}`; console.error('Error from proxy for AI insights:', result); throw new Error(errorDetail); }
+            if(result.candidates?.[0]?.content?.parts?.[0]?.text) { domElements.aiInsightsContent.textContent = result.candidates[0].content.parts[0].text.trim(); } 
+            else { console.error('Unexpected data structure from proxy/Gemini (Insights):', result); throw new Error('Could not extract insights from API response via proxy.'); }
+        }catch(error){ console.error('Error fetching AI insights (via proxy):',error); const displayMessage = error instanceof Error && error.message ? error.message : String(error); domElements.aiInsightsError.textContent=`Failed to load AI insights. ${displayMessage || 'An unexpected error occurred.'} Try again.`; domElements.aiInsightsContent.textContent='';
         }finally{domElements.aiInsightsLoading.classList.add('hidden');domElements.aiInsightsCard.scrollIntoView({behavior:'smooth',block:'nearest'});}
     }
 
@@ -494,223 +736,106 @@
         let sDataStr="",gDataStr="";for(const s in currentPortfolio.actualSectors){const p=currentPortfolio.actualSectors[s]*100;if(p>0.1)sDataStr+=`${s}: ${round(p,1)}%, `;}sDataStr=sDataStr.slice(0,-2);for(const g in currentPortfolio.actualGeographies){const p=currentPortfolio.actualGeographies[g]*100;if(p>0.1)gDataStr+=`${g}: ${round(p,1)}%, `;}gDataStr=gDataStr.slice(0,-2);const currentPortfolioETFsString=currentPortfolio.etfs.map(e=>`${e.name} (${e.ticker})`).join(', ');
         const promptTextForGemini=`You are a helpful financial assistant. Current portfolio consists of: ${currentPortfolioETFsString}. Current portfolio actual sector allocations: ${sDataStr||'None significant'}. Current portfolio actual geographic allocations: ${gDataStr||'None significant'}. Available ETFs to suggest from (provide ticker and name): ${JSON.stringify(availableETFsForSuggestion)}. Based on this, suggest 1 or 2 additional ETFs from the 'Available ETFs' list that could enhance diversification for the current portfolio. For each suggestion, provide its ticker, name, and a detailed (3-4 sentences) rationale. This rationale should clearly explain how the suggested ETF would enhance diversification, specifically mentioning which underrepresented sectors or geographies it covers, or what different investment style or market cap it introduces, and how it complements the existing portfolio's exposures. Do not suggest ETFs already in the current portfolio. Do not give financial advice or make any specific investment recommendations. Ensure your response is in the specified JSON format.`;
         const schema={type:"ARRAY",items:{type:"OBJECT",properties:{"ticker":{"type":"STRING"},"name":{"type":"STRING"},"rationale":{"type":"STRING"}},required:["ticker","name","rationale"]}};
-        
         const geminiModel = "gemini-2.0-flash";
-        const geminiApiPayload = {
-            contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }],
-            generationConfig: { responseMimeType: "application/json", responseSchema: schema }
-        };
+        const geminiApiPayload = { contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
         const proxyUrl = "/api/geminiProxy";
-
         try{
-            const response = await fetch(proxyUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload })
-            });
-            
+            const response = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload }) });
             const result = await response.json();
-
-            if(!response.ok){
-                const errorDetail = result?.error || `Proxy request failed with status ${response.status}`;
-                console.error('Error from proxy for diversification suggestions:', result);
-                throw new Error(errorDetail);
-            }
-
+            if(!response.ok){ const errorDetail = result?.error || `Proxy request failed with status ${response.status}`; console.error('Error from proxy for diversification suggestions:', result); throw new Error(errorDetail); }
             if(result.candidates?.[0]?.content?.parts?.[0]?.text){
                 const suggestions=JSON.parse(result.candidates[0].content.parts[0].text);
-                if(suggestions&&suggestions.length>0){
-                    let html='<ul class="space-y-3">';
-                    suggestions.forEach(sugg=>{html+=`<li class="p-3 border border-teal-300 rounded-md bg-teal-50 shadow-sm"><p class="font-semibold text-teal-700">${sugg.name} (${sugg.ticker})</p><p class="mt-1 text-xs text-teal-600">${sugg.rationale}</p></li>`;});
-                    html+='</ul>';
-                    domElements.diversificationSuggestionsContent.innerHTML=html;
-                } else {
-                    domElements.diversificationSuggestionsContent.innerHTML='<p>No specific diversification suggestions could be generated at this time, or the AI determined the portfolio is already well-diversified with the available options.</p>';
-                }
-            } else {
-                console.error('Unexpected data structure from proxy/Gemini (Diversification):',result);
-                throw new Error('Could not extract diversification suggestions from API response via proxy.');
-            }
-        }catch(error){
-            console.error('Error fetching diversification suggestions (via proxy):',error);
-            const displayMessage = error instanceof Error && error.message ? error.message : String(error);
-            domElements.diversificationSuggestionsError.textContent=`Failed to load suggestions. ${displayMessage || 'An unexpected error occurred.'} Try again.`;
-            domElements.diversificationSuggestionsContent.innerHTML='';
+                if(suggestions&&suggestions.length>0){ let html='<ul class="space-y-3">'; suggestions.forEach(sugg=>{html+=`<li class="p-3 border border-teal-300 rounded-md bg-teal-50 shadow-sm"><p class="font-semibold text-teal-700">${sugg.name} (${sugg.ticker})</p><p class="mt-1 text-xs text-teal-600">${sugg.rationale}</p></li>`;}); html+='</ul>'; domElements.diversificationSuggestionsContent.innerHTML=html;
+                } else { domElements.diversificationSuggestionsContent.innerHTML='<p>No specific diversification suggestions could be generated at this time, or the AI determined the portfolio is already well-diversified with the available options.</p>'; }
+            } else { console.error('Unexpected data structure from proxy/Gemini (Diversification):',result); throw new Error('Could not extract diversification suggestions from API response via proxy.'); }
+        }catch(error){ console.error('Error fetching diversification suggestions (via proxy):',error); const displayMessage = error instanceof Error && error.message ? error.message : String(error); domElements.diversificationSuggestionsError.textContent=`Failed to load suggestions. ${displayMessage || 'An unexpected error occurred.'} Try again.`; domElements.diversificationSuggestionsContent.innerHTML='';
         }finally{domElements.diversificationLoading.classList.add('hidden');domElements.diversificationSuggestionsCard.scrollIntoView({behavior:'smooth',block:'nearest'});}}
 
     async function handleRefineProfileWithAi() {
         const userFocus = domElements.aiProfileRefinementInput.value.trim();
-        if (!userFocus && !selectedBaseProfileKey) { // Require focus if no base profile selected
-             domElements.aiProfileRefinementError.textContent = "Please describe your focus or select a base profile.";
-             domElements.aiProfileRefinementRationale.classList.add('hidden');
-             return;
-        }
-        if (!userFocus && selectedBaseProfileKey){
-            domElements.aiProfileRefinementError.textContent = "Please describe your focus to refine the selected profile.";
-            domElements.aiProfileRefinementRationale.classList.add('hidden');
-            return;
-        }
-
-
-        domElements.aiProfileRefinementLoading.classList.remove('hidden');
-        domElements.aiProfileRefinementError.textContent = '';
-        domElements.aiProfileRefinementRationale.classList.add('hidden');
-        domElements.aiProfileRefinementRationale.textContent = '';
-        
+        if (!userFocus && !selectedBaseProfileKey) { domElements.aiProfileRefinementError.textContent = "Please describe your investment focus or select a base profile to refine."; domElements.aiProfileRefinementRationale.classList.add('hidden'); return; }
+        if (!userFocus && selectedBaseProfileKey){ domElements.aiProfileRefinementError.textContent = "Please describe how you'd like to refine the selected profile."; domElements.aiProfileRefinementRationale.classList.add('hidden'); return; }
+        domElements.aiProfileRefinementLoading.classList.remove('hidden'); domElements.aiProfileRefinementError.textContent = ''; domElements.aiProfileRefinementRationale.classList.add('hidden'); domElements.aiProfileRefinementRationale.textContent = '';
         let baseProfileName, baseSectors, baseGeos;
         if (selectedBaseProfileKey && CONFIG.READY_MADE_PORTFOLIOS[selectedBaseProfileKey]) {
-            const profile = CONFIG.READY_MADE_PORTFOLIOS[selectedBaseProfileKey];
-            baseProfileName = profile.name;
-            baseSectors = { ...CONFIG.GENERIC_EQUITY_SECTOR_PROFILE }; 
-            baseGeos = { ...profile.geographies };
-        } else {
-            baseProfileName = CONFIG.DEFAULT_AI_BASE_PROFILE.name;
-            baseSectors = { ...CONFIG.DEFAULT_AI_BASE_PROFILE.sectors };
-            baseGeos = { ...CONFIG.DEFAULT_AI_BASE_PROFILE.geographies };
-            domElements.selectedBaseProfileNameSpan.textContent = baseProfileName; // Show default if used
-            domElements.baseProfileInfoSpan.classList.remove('hidden');
+            const profile = CONFIG.READY_MADE_PORTFOLIOS[selectedBaseProfileKey]; baseProfileName = profile.name;
+            baseSectors = { ...(profile.sectors || CONFIG.DEFAULT_AI_BASE_PROFILE.sectors) }; // Use profile's sectors or default
+            baseGeos = { ...(profile.geographies || CONFIG.DEFAULT_AI_BASE_PROFILE.geographies) }; // Use profile's geos or default
+        } else { 
+            baseProfileName = CONFIG.DEFAULT_AI_BASE_PROFILE.name; baseSectors = { ...CONFIG.DEFAULT_AI_BASE_PROFILE.sectors }; baseGeos = { ...CONFIG.DEFAULT_AI_BASE_PROFILE.geographies };
+            domElements.selectedBaseProfileNameSpan.textContent = baseProfileName; domElements.baseProfileInfoSpan.classList.remove('hidden');
         }
         let baseSectorsString = ""; Object.entries(baseSectors).forEach(([s,v]) => baseSectorsString += `${s}: ${v}%, `); baseSectorsString = baseSectorsString.slice(0, -2);
         let baseGeosString = ""; Object.entries(baseGeos).forEach(([g,v]) => baseGeosString += `${g}: ${v}%, `); baseGeosString = baseGeosString.slice(0, -2);
-        
         const promptTextForGemini = `You are a helpful financial assistant. The user wants to refine an investment profile. The base profile being considered is "${baseProfileName}" with initial allocations: Base Sector Allocations: ${baseSectorsString}. Base Geographic Allocations: ${baseGeosString}. The user's specific focus or concern is: "${userFocus}". Based on the user's focus, please suggest adjusted percentage allocations for ALL of the following sectors: ${CONFIG.SECTORS.join(', ')}, and ALL of the following geographies: ${CONFIG.GEOGRAPHIES.join(', ')}. Also, provide a brief (2-3 sentences) 'refinementRationale' explaining the key adjustments you made and why, based on the user's focus. The sum of your suggested sector percentages MUST equal 100%. The sum of your suggested geographic percentages MUST equal 100%. Make reasonable adjustments to the base profile. For categories not directly impacted by the user's focus, try to maintain original allocations or adjust minimally to ensure totals sum to 100. Do not give financial advice or specific investment recommendations. Return your response in the specified JSON format. Ensure all listed sectors and geographies are present in your response, even if their allocation is 0.`;
-        
         const sectorProperties = {}; CONFIG.SECTORS.forEach(s => sectorProperties[s] = {"type":"NUMBER"});
         const geoProperties = {}; CONFIG.GEOGRAPHIES.forEach(g => geoProperties[g] = {"type":"NUMBER"});
         const schema = { type: "OBJECT", properties: { "adjustedSectors": { type: "OBJECT", properties: sectorProperties, required: CONFIG.SECTORS }, "adjustedGeographies": { type: "OBJECT", properties: geoProperties, required: CONFIG.GEOGRAPHIES }, "refinementRationale": { "type": "STRING" } }, required: ["adjustedSectors", "adjustedGeographies", "refinementRationale"] };
-        
         const geminiModel = "gemini-2.0-flash";
-        const geminiApiPayload = {
-            contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }],
-            generationConfig: { responseMimeType: "application/json", responseSchema: schema }
-        };
+        const geminiApiPayload = { contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
         const proxyUrl = "/api/geminiProxy";
-
         try {
-            const response = await fetch(proxyUrl, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload }) 
-            });
-            
+            const response = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload }) });
             const result = await response.json();
-
-            if (!response.ok) {
-                const errorDetail = result?.error || `Proxy request failed with status ${response.status}`;
-                console.error('Error from proxy for profile refinement:', result);
-                throw new Error(errorDetail);
-            }
-
+            if (!response.ok) { const errorDetail = result?.error || `Proxy request failed with status ${response.status}`; console.error('Error from proxy for profile refinement:', result); throw new Error(errorDetail); }
             if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
                 const refinedData = JSON.parse(result.candidates[0].content.parts[0].text);
                 const sumSectors = round(Object.values(refinedData.adjustedSectors).reduce((s,v)=>s+(parseFloat(v)||0),0),0);
                 const sumGeos = round(Object.values(refinedData.adjustedGeographies).reduce((s,v)=>s+(parseFloat(v)||0),0),0);
                 if (sumSectors !== 100 || sumGeos !== 100) { throw new Error(`AI returned allocations not summing to 100%. Sectors: ${sumSectors}%, Geos: ${sumGeos}%.`); }
-                
-                populateInputFields('sector', refinedData.adjustedSectors);
-                populateInputFields('geo', refinedData.adjustedGeographies);
-                
-                if (refinedData.refinementRationale) { 
-                    domElements.aiProfileRefinementRationale.textContent = refinedData.refinementRationale; 
-                    domElements.aiProfileRefinementRationale.classList.remove('hidden'); 
-                }
+                populateInputFields('sector', refinedData.adjustedSectors); populateInputFields('geo', refinedData.adjustedGeographies);
+                if (refinedData.refinementRationale) { domElements.aiProfileRefinementRationale.textContent = refinedData.refinementRationale; domElements.aiProfileRefinementRationale.classList.remove('hidden'); }
                 domElements.aiProfileRefinementInput.value = ''; 
-                // selectedBaseProfileKey = null; // Keep this if we want the "refining X profile" message to persist until another action
-                // domElements.baseProfileInfoSpan.classList.add('hidden'); // Keep visible if selectedBaseProfileKey is kept
                 domElements.sectorInputsContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else { 
-                console.error('Unexpected data structure from proxy/Gemini (profile refinement):', result); 
-                throw new Error('Could not extract refined profile from API response via proxy.'); 
-            }
-        } catch (error) { 
-            console.error('Error refining profile with AI (via proxy):', error); 
-            const displayMessage = error instanceof Error && error.message ? error.message : String(error);
-            domElements.aiProfileRefinementError.textContent = `Failed to refine profile. ${displayMessage || 'An unexpected error occurred.'} Please try again or adjust manually.`;
+            } else { console.error('Unexpected data structure from proxy/Gemini (profile refinement):', result); throw new Error('Could not extract refined profile from API response via proxy.'); }
+        } catch (error) { console.error('Error refining profile with AI (via proxy):', error); const displayMessage = error instanceof Error && error.message ? error.message : String(error); domElements.aiProfileRefinementError.textContent = `Failed to refine profile. ${displayMessage || 'An unexpected error occurred.'} Please try again or adjust manually.`;
         } finally { domElements.aiProfileRefinementLoading.classList.add('hidden'); }
     }
 
     async function handleAnalyzeAllocationDifferences() {
         if (!currentPortfolio || !originalTargetSectors || !originalTargetGeographies) {
             domElements.aiDifferenceAnalysisError.textContent = 'Please generate a portfolio first to analyze differences.';
-            domElements.aiDifferenceAnalysisCard.classList.remove('hidden');
-            domElements.sectorDifferenceExplanation.textContent = ''; domElements.sectorDifferenceSuggestions.textContent = '';
-            domElements.geographicDifferenceExplanation.textContent = ''; domElements.geographicDifferenceSuggestions.textContent = '';
-            domElements.aiDifferenceAnalysisLoading.classList.add('hidden');
-            domElements.aiInsightsCard.classList.add('hidden'); domElements.diversificationSuggestionsCard.classList.add('hidden');
-            return;
+            domElements.aiDifferenceAnalysisCard.classList.remove('hidden'); domElements.sectorDifferenceExplanation.textContent = ''; domElements.sectorDifferenceSuggestions.textContent = ''; domElements.geographicDifferenceExplanation.textContent = ''; domElements.geographicDifferenceSuggestions.textContent = ''; domElements.aiDifferenceAnalysisLoading.classList.add('hidden');
+            domElements.aiInsightsCard.classList.add('hidden'); domElements.diversificationSuggestionsCard.classList.add('hidden'); return;
         }
         domElements.aiDifferenceAnalysisCard.classList.remove('hidden'); domElements.aiDifferenceAnalysisLoading.classList.remove('hidden');
-        domElements.sectorDifferenceExplanation.textContent = ''; domElements.sectorDifferenceSuggestions.textContent = '';
-        domElements.geographicDifferenceExplanation.textContent = ''; domElements.geographicDifferenceSuggestions.textContent = '';
-        domElements.aiDifferenceAnalysisError.textContent = '';
+        domElements.sectorDifferenceExplanation.textContent = ''; domElements.sectorDifferenceSuggestions.textContent = ''; domElements.geographicDifferenceExplanation.textContent = ''; domElements.geographicDifferenceSuggestions.textContent = ''; domElements.aiDifferenceAnalysisError.textContent = '';
         domElements.aiInsightsCard.classList.add('hidden'); domElements.diversificationSuggestionsCard.classList.add('hidden');
-
         const desiredSectorsPercent = {}; for (const sector in originalTargetSectors) desiredSectorsPercent[sector] = round(originalTargetSectors[sector] * 100, 1);
         const actualSectorsPercent = {}; for (const sector in currentPortfolio.actualSectors) actualSectorsPercent[sector] = round(currentPortfolio.actualSectors[sector] * 100, 1);
         const desiredGeosPercent = {}; for (const geo in originalTargetGeographies) desiredGeosPercent[geo] = round(originalTargetGeographies[geo] * 100, 1);
         const actualGeosPercent = {}; for (const geo in currentPortfolio.actualGeographies) actualGeosPercent[geo] = round(currentPortfolio.actualGeographies[geo] * 100, 1);
         const currentETFsInPortfolio = currentPortfolio.etfs.map(etf => `${etf.name} (${etf.ticker}) at ${formatPercent(etf.weight)} weight`).join('; ');
         const availableETFsForSuggestion = RAW_VANGUARD_ETFS.filter(etf => !currentPortfolio.etfs.find(pEtf => pEtf.ticker === etf.ticker)).map(etf => ({ ticker: etf.ticker, name: etf.name }));
-        
         const promptTextForGemini = `You are a helpful financial analyst. The user's desired portfolio allocations and the actual allocations of their generated ETF portfolio are provided below. Current ETFs in portfolio: ${currentETFsInPortfolio}. Available ETFs for suggestions (if needed, provide ticker and name): ${JSON.stringify(availableETFsForSuggestion)}. SECTOR ANALYSIS: Desired Sector Allocations: ${JSON.stringify(desiredSectorsPercent)}. Actual Sector Allocations: ${JSON.stringify(actualSectorsPercent)}. Please: 1. Identify the 2-3 most significant differences (over or underweight) between desired and actual sector allocations. 2. Briefly explain potential reasons for these sector differences, considering the ETFs in the current portfolio. 3. Suggest 1-2 actionable steps the user could consider to reduce these sector differences. This might involve adjusting weights of current ETFs or, if a large gap persists, suggesting an alternative ETF from the 'Available ETFs' list that could help (mention its name and ticker). GEOGRAPHIC ANALYSIS: Desired Geographic Allocations: ${JSON.stringify(desiredGeosPercent)}. Actual Geographic Allocations: ${JSON.stringify(actualGeosPercent)}. Please: 1. Identify the 2-3 most significant differences (over or underweight) between desired and actual geographic allocations. 2. Briefly explain potential reasons for these geographic differences, considering the ETFs in the current portfolio. 3. Suggest 1-2 actionable steps the user could consider to reduce these geographic differences. This might involve adjusting weights of current ETFs or, if a large gap persists, suggesting an alternative ETF from the 'Available ETFs' list that could help (mention its name and ticker). IMPORTANT: - Be concise and clear. - Focus on explaining the 'why' behind differences and practical 'how-to' for adjustments. - Acknowledge if perfect alignment might be difficult with the current setup. - Do NOT give financial advice or make specific investment recommendations beyond suggesting alignment strategies. - Return your response in the specified JSON format.`;
         const schema = { type: "OBJECT", properties: { "sectorDifferenceExplanation": { "type": "STRING" }, "sectorDifferenceSuggestions": { "type": "STRING" }, "geographicDifferenceExplanation": { "type": "STRING" }, "geographicDifferenceSuggestions": { "type": "STRING" } }, required: ["sectorDifferenceExplanation", "sectorDifferenceSuggestions", "geographicDifferenceExplanation", "geographicDifferenceSuggestions"] };
-
         const geminiModel = "gemini-2.0-flash";
-        const geminiApiPayload = {
-            contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }],
-            generationConfig: { responseMimeType: "application/json", responseSchema: schema }
-        };
+        const geminiApiPayload = { contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
         const proxyUrl = "/api/geminiProxy";
-        
         try {
-            const response = await fetch(proxyUrl, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload }) 
-            });
-            
+            const response = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload }) });
             const result = await response.json();
-
-            if (!response.ok) { 
-                const errorDetail = result?.error || `Proxy request failed with status ${response.status}`;
-                console.error('Error from proxy for difference analysis:', result);
-                throw new Error(errorDetail);
-            }
-
+            if (!response.ok) { const errorDetail = result?.error || `Proxy request failed with status ${response.status}`; console.error('Error from proxy for difference analysis:', result); throw new Error(errorDetail); }
             if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
                 const analysis = JSON.parse(result.candidates[0].content.parts[0].text);
                 domElements.sectorDifferenceExplanation.textContent = analysis.sectorDifferenceExplanation || "No specific explanation provided.";
                 domElements.sectorDifferenceSuggestions.textContent = analysis.sectorDifferenceSuggestions || "No specific suggestions provided.";
                 domElements.geographicDifferenceExplanation.textContent = analysis.geographicDifferenceExplanation || "No specific explanation provided.";
                 domElements.geographicDifferenceSuggestions.textContent = analysis.geographicDifferenceSuggestions || "No specific suggestions provided.";
-            } else { 
-                console.error('Unexpected data structure from proxy/Gemini (Difference Analysis):', result); 
-                throw new Error('Could not extract difference analysis from API response via proxy.'); 
-            }
-        } catch (error) {
-            console.error('Error fetching AI difference analysis (via proxy):', error);
-            const displayMessage = error instanceof Error && error.message ? error.message : String(error);
-            domElements.aiDifferenceAnalysisError.textContent = `Failed to load difference analysis. ${displayMessage || 'An unexpected error occurred.'} Please try again.`;
-        } finally {
-            domElements.aiDifferenceAnalysisLoading.classList.add('hidden');
-            domElements.aiDifferenceAnalysisCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
+            } else { console.error('Unexpected data structure from proxy/Gemini (Difference Analysis):', result); throw new Error('Could not extract difference analysis from API response via proxy.'); }
+        } catch (error) { console.error('Error fetching AI difference analysis (via proxy):', error); const displayMessage = error instanceof Error && error.message ? error.message : String(error); domElements.aiDifferenceAnalysisError.textContent = `Failed to load difference analysis. ${displayMessage || 'An unexpected error occurred.'} Please try again.`;
+        } finally { domElements.aiDifferenceAnalysisLoading.classList.add('hidden'); domElements.aiDifferenceAnalysisCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
     }
 
-
+    // --- DOMContentLoaded ---
     document.addEventListener('DOMContentLoaded', () => {
         domElements.profileButtons = document.querySelectorAll('.profile-btn');
         domElements.indicatorCardHeaders = document.querySelectorAll('.indicator-header');
         if (domElements.currentYearSpan) domElements.currentYearSpan.textContent = new Date().getFullYear();
-        
         normalizeETFData();
         generateInputFields(domElements.sectorInputsDiv, CONFIG.SECTORS, 'sector', () => updateTotalAllocation('sector'));
         generateInputFields(domElements.geoInputsDiv, CONFIG.GEOGRAPHIES, 'geo', () => updateTotalAllocation('geo'));
-        
-        populateInputFields('sector', CONFIG.DEFAULT_AI_BASE_PROFILE.sectors);
-        populateInputFields('geo', CONFIG.DEFAULT_AI_BASE_PROFILE.geographies);
         domElements.baseProfileInfoSpan.classList.add('hidden'); 
-
         domElements.profileButtons.forEach(btn => btn.addEventListener('click', handleReadyMadeProfileClick));
         domElements.generatePortfolioBtn.addEventListener('click', handleGeneratePortfolio);
         domElements.recalculateInsightsBtn.addEventListener('click', handleRecalculatePortfolioInsights);
@@ -718,9 +843,9 @@
         domElements.getDiversificationSuggestionsBtn.addEventListener('click', handleGetDiversificationSuggestions);
         domElements.refineProfileWithAiBtn.addEventListener('click', handleRefineProfileWithAi); 
         domElements.getDifferenceAnalysisBtn.addEventListener('click', handleAnalyzeAllocationDifferences); 
-        
-        domElements.indicatorCardHeaders.forEach(h => h.addEventListener('click', toggleIndicatorDetails));
-        updateTotalAllocation('sector'); updateTotalAllocation('geo');
+        domElements.indicatorCardHeaders.forEach(header => header.addEventListener('click', toggleIndicatorDetails));
+        updateTotalAllocation('sector');
+        updateTotalAllocation('geo');
     });
 </script>
 </body>
