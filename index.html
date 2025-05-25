@@ -88,6 +88,14 @@
         #aiProfileRefinementRationale { background-color: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; }
         .ai-analysis-section h4 { font-semibold: true; margin-bottom: 0.5rem; }
         .ai-analysis-section p { margin-bottom: 0.25rem; }
+
+        .custom-table th, .custom-table td {
+            padding-left: 0.75rem; 
+            padding-right: 0.75rem;
+            padding-top: 0.5rem; 
+            padding-bottom: 0.5rem; 
+            vertical-align: middle; 
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -109,7 +117,7 @@
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const vid = document.getElementById('introVideo');
-                    if (vid) { // Check if vid element exists
+                    if (vid) { 
                         vid.addEventListener('loadeddata', function() {
                             vid.pause();
                             vid.currentTime = 0; 
@@ -125,6 +133,11 @@
         <section id="userInputSection" class="card">
             <h2 class="text-xl font-semibold mb-4">1. Define Your Desired Portfolio</h2>
             
+            <div class="mb-6">
+                <label for="investmentAmount" class="block text-lg font-medium mb-2">Total Investment Amount ($):</label>
+                <input type="number" id="investmentAmount" value="100000" class="w-full md:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="e.g., 100000">
+            </div>
+
             <div id="aiProfileRefinementSection" class="card ai-profile-refinement-card mb-6">
                 <h3 class="text-lg font-medium mb-2 text-orange-800">✨ AI-Assisted Profile Refinement</h3>
                 <p class="text-sm text-orange-700 mb-1">
@@ -250,12 +263,13 @@
             <div id="etfCompositionSection" class="card">
                 <h3 class="text-lg font-semibold mb-3">ETF Composition</h3>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200 custom-table">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ETF Name</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticker</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight (%)</th>
+                                <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ETF Name</th>
+                                <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticker</th>
+                                <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">$ Amount</th>
+                                <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight (%)</th>
                             </tr>
                         </thead>
                         <tbody id="etfCompositionTableBody" class="bg-white divide-y divide-gray-200">
@@ -323,13 +337,13 @@
                 <div class="card">
                     <h3 class="text-lg font-semibold mb-3">Sector Exposure Comparison</h3>
                     <div class="overflow-x-auto max-h-96">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm">
+                        <table class="min-w-full divide-y divide-gray-200 text-sm custom-table">
                             <thead class="bg-gray-50 sticky top-0">
                                 <tr>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
                                 </tr>
                             </thead>
                             <tbody id="sectorComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody>
@@ -340,13 +354,13 @@
                 <div class="card">
                     <h3 class="text-lg font-semibold mb-3">Geographic Exposure Comparison</h3>
                     <div class="overflow-x-auto max-h-96">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm">
+                        <table class="min-w-full divide-y divide-gray-200 text-sm custom-table">
                             <thead class="bg-gray-50 sticky top-0">
                                 <tr>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Geography</th>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Geography</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
                                 </tr>
                             </thead>
                             <tbody id="geoComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody>
@@ -443,27 +457,48 @@
     let selectedBaseProfileKey = null; 
 
     const domElements = {
-        profileButtons: null, sectorInputsContainer: document.getElementById('sectorInputsContainer'), sectorInputsDiv: document.getElementById('sectorInputs'),
-        totalSectorAllocationSpan: document.getElementById('totalSectorAllocation'), sectorErrorP: document.getElementById('sectorError'),
-        geoInputsContainer: document.getElementById('geoInputsContainer'), geoInputsDiv: document.getElementById('geoInputs'),
-        totalGeoAllocationSpan: document.getElementById('totalGeoAllocation'), geoErrorP: document.getElementById('geoError'),
-        generatePortfolioBtn: document.getElementById('generatePortfolioBtn'), formErrorMessageP: document.getElementById('formErrorMessage'),
-        userInputSection: document.getElementById('userInputSection'), resultsSection: document.getElementById('resultsSection'),
-        loadingIndicatorDiv: document.getElementById('loadingIndicator'), noSolutionMessageDiv: document.getElementById('noSolutionMessage'),
-        portfolioIndicatorsDiv: document.getElementById('portfolioIndicators'), indicatorReturnP: document.getElementById('indicatorReturn'),
-        returnDetailsListUl: document.getElementById('returnDetailsList'), indicatorExpenseP: document.getElementById('indicatorExpense'),
-        expenseDetailsListUl: document.getElementById('expenseDetailsList'), indicatorSectorMatchP: document.getElementById('indicatorSectorMatch'),
-        indicatorSectorMatchDescP: document.getElementById('indicatorSectorMatchDesc'), sectorEffectiveAvgDeviationSpan: document.getElementById('sectorEffectiveAvgDeviation'),
-        sectorDeviationsListUl: document.getElementById('sectorDeviationsList'), indicatorGeoMatchP: document.getElementById('indicatorGeoMatch'),
-        indicatorGeoMatchDescP: document.getElementById('indicatorGeoMatchDesc'), geoEffectiveAvgDeviationSpan: document.getElementById('geoEffectiveAvgDeviation'),
-        geoDeviationsListUl: document.getElementById('geoDeviationsList'), indicatorCardHeaders: null, 
-        etfCompositionSectionDiv: document.getElementById('etfCompositionSection'), etfCompositionTableBody: document.getElementById('etfCompositionTableBody'),
-        totalCompositionWeightSpan: document.getElementById('totalCompositionWeight'), compositionErrorP: document.getElementById('compositionError'),
-        recalculateInsightsBtn: document.getElementById('recalculateInsightsBtn'), getAiInsightsBtn: document.getElementById('getAiInsightsBtn'),
+        profileButtons: null, 
+        investmentAmountInput: document.getElementById('investmentAmount'), 
+        sectorInputsContainer: document.getElementById('sectorInputsContainer'), 
+        sectorInputsDiv: document.getElementById('sectorInputs'),
+        totalSectorAllocationSpan: document.getElementById('totalSectorAllocation'), 
+        sectorErrorP: document.getElementById('sectorError'),
+        geoInputsContainer: document.getElementById('geoInputsContainer'), 
+        geoInputsDiv: document.getElementById('geoInputs'),
+        totalGeoAllocationSpan: document.getElementById('totalGeoAllocation'), 
+        geoErrorP: document.getElementById('geoError'),
+        generatePortfolioBtn: document.getElementById('generatePortfolioBtn'), 
+        formErrorMessageP: document.getElementById('formErrorMessage'),
+        userInputSection: document.getElementById('userInputSection'), 
+        resultsSection: document.getElementById('resultsSection'),
+        loadingIndicatorDiv: document.getElementById('loadingIndicator'), 
+        noSolutionMessageDiv: document.getElementById('noSolutionMessage'),
+        portfolioIndicatorsDiv: document.getElementById('portfolioIndicators'), 
+        indicatorReturnP: document.getElementById('indicatorReturn'),
+        returnDetailsListUl: document.getElementById('returnDetailsList'), 
+        indicatorExpenseP: document.getElementById('indicatorExpense'),
+        expenseDetailsListUl: document.getElementById('expenseDetailsList'), 
+        indicatorSectorMatchP: document.getElementById('indicatorSectorMatch'),
+        indicatorSectorMatchDescP: document.getElementById('indicatorSectorMatchDesc'), 
+        sectorEffectiveAvgDeviationSpan: document.getElementById('sectorEffectiveAvgDeviation'),
+        sectorDeviationsListUl: document.getElementById('sectorDeviationsList'), 
+        indicatorGeoMatchP: document.getElementById('indicatorGeoMatch'),
+        indicatorGeoMatchDescP: document.getElementById('indicatorGeoMatchDesc'), 
+        geoEffectiveAvgDeviationSpan: document.getElementById('geoEffectiveAvgDeviation'),
+        geoDeviationsListUl: document.getElementById('geoDeviationsList'), 
+        indicatorCardHeaders: null, 
+        etfCompositionSectionDiv: document.getElementById('etfCompositionSection'), 
+        etfCompositionTableBody: document.getElementById('etfCompositionTableBody'),
+        totalCompositionWeightSpan: document.getElementById('totalCompositionWeight'), 
+        compositionErrorP: document.getElementById('compositionError'),
+        recalculateInsightsBtn: document.getElementById('recalculateInsightsBtn'), 
+        getAiInsightsBtn: document.getElementById('getAiInsightsBtn'),
         getDiversificationSuggestionsBtn: document.getElementById('getDiversificationSuggestionsBtn'), 
         getDifferenceAnalysisBtn: document.getElementById('getDifferenceAnalysisBtn'), 
-        aiInsightsCard: document.getElementById('aiInsightsCard'), aiInsightsLoading: document.getElementById('aiInsightsLoading'),
-        aiInsightsContent: document.getElementById('aiInsightsContent'), aiInsightsError: document.getElementById('aiInsightsError'),
+        aiInsightsCard: document.getElementById('aiInsightsCard'), 
+        aiInsightsLoading: document.getElementById('aiInsightsLoading'),
+        aiInsightsContent: document.getElementById('aiInsightsContent'), 
+        aiInsightsError: document.getElementById('aiInsightsError'),
         diversificationSuggestionsCard: document.getElementById('diversificationSuggestionsCard'), 
         diversificationLoading: document.getElementById('diversificationLoading'), 
         diversificationSuggestionsContent: document.getElementById('diversificationSuggestionsContent'), 
@@ -475,8 +510,10 @@
         geographicDifferenceExplanation: document.getElementById('geographicDifferenceExplanation'), 
         geographicDifferenceSuggestions: document.getElementById('geographicDifferenceSuggestions'), 
         aiDifferenceAnalysisError: document.getElementById('aiDifferenceAnalysisError'), 
-        sectorComparisonTableBody: document.getElementById('sectorComparisonTableBody'), sectorDoughnutChartCanvas: document.getElementById('sectorDoughnutChart'),
-        geoComparisonTableBody: document.getElementById('geoComparisonTableBody'), geoDoughnutChartCanvas: document.getElementById('geoDoughnutChart'),
+        sectorComparisonTableBody: document.getElementById('sectorComparisonTableBody'), 
+        sectorDoughnutChartCanvas: document.getElementById('sectorDoughnutChart'),
+        geoComparisonTableBody: document.getElementById('geoComparisonTableBody'), 
+        geoDoughnutChartCanvas: document.getElementById('geoDoughnutChart'),
         currentYearSpan: document.getElementById('currentYear'),
         aiProfileRefinementSection: document.getElementById('aiProfileRefinementSection'),
         baseProfileInfoSpan: document.getElementById('baseProfileInfo'),
@@ -490,6 +527,8 @@
 
     const round = (num, places = 2) => parseFloat(num.toFixed(places));
     const formatPercent = (decimal, places = 2) => `${round(decimal * 100, places)}%`;
+    const formatCurrency = (amount) => amount.toLocaleString('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
 
     function normalizeETFData() { 
         vanguardETFs = RAW_VANGUARD_ETFS.map(etf => {
@@ -597,33 +636,210 @@
         domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.add('hidden');
     }
     function getScoreDescription(score) { if(score>=90)return"Excellent";if(score>=80)return"Good";if(score>=70)return"Fair";return"Needs Improvement";}
-    function updatePortfolioDisplay(portfolioData,targetSectorsPercent,targetGeographiesPercent){
-        let weightedReturn=0,weightedExpense=0;const returnDetails=[],expenseDetails=[];portfolioData.etfs.forEach(etf=>{weightedReturn+=etf.y1_return*etf.weight;weightedExpense+=etf.expenseRatio*etf.weight;returnDetails.push(`<li>${etf.ticker}: ${formatPercent(etf.weight)} * ${formatPercent(etf.y1_return)} = ${formatPercent(etf.y1_return*etf.weight,3)}</li>`);expenseDetails.push(`<li>${etf.ticker}: ${formatPercent(etf.weight)} * ${formatPercent(etf.expenseRatio,4)} = ${formatPercent(etf.expenseRatio*etf.weight,5)}</li>`);});domElements.indicatorReturnP.textContent=formatPercent(weightedReturn);domElements.returnDetailsListUl.innerHTML=returnDetails.join('');domElements.indicatorExpenseP.textContent=formatPercent(weightedExpense,3);domElements.expenseDetailsListUl.innerHTML=expenseDetails.join('');const effAvgDevSectors=portfolioData.sectorSumAbsDiff*100/2,sectorScore=Math.max(0,round(100-effAvgDevSectors));domElements.indicatorSectorMatchP.textContent=`${sectorScore}/100`;domElements.indicatorSectorMatchDescP.textContent=getScoreDescription(sectorScore);domElements.sectorEffectiveAvgDeviationSpan.textContent=round(effAvgDevSectors);const sectorDevs=[];CONFIG.SECTORS.forEach(s=>{const actual=(portfolioData.actualSectors[s]||0)*100,desired=(targetSectorsPercent[s]||0),diff=Math.abs(actual-desired);if(diff>0.001)sectorDevs.push(`<li>${s}: ${round(diff)}% dev.</li>`);});domElements.sectorDeviationsListUl.innerHTML=sectorDevs.length?sectorDevs.join(''):'<li>No sig. deviations.</li>';const effAvgDevGeo=portfolioData.geoSumAbsDiff*100/2,geoScore=Math.max(0,round(100-effAvgDevGeo));domElements.indicatorGeoMatchP.textContent=`${geoScore}/100`;domElements.indicatorGeoMatchDescP.textContent=getScoreDescription(geoScore);domElements.geoEffectiveAvgDeviationSpan.textContent=round(effAvgDevGeo);const geoDevs=[];CONFIG.GEOGRAPHIES.forEach(g=>{const actual=(portfolioData.actualGeographies[g]||0)*100,desired=(targetGeographiesPercent[g]||0),diff=Math.abs(actual-desired);if(diff>0.001)geoDevs.push(`<li>${g}: ${round(diff)}% dev.</li>`);});domElements.geoDeviationsListUl.innerHTML=geoDevs.length?geoDevs.join(''):'<li>No sig. deviations.</li>';domElements.etfCompositionTableBody.innerHTML='';let totalCompWeight=0;portfolioData.etfs.forEach(etf=>{const row=domElements.etfCompositionTableBody.insertRow();row.insertCell().textContent=etf.name;row.insertCell().textContent=etf.ticker;const wc=row.insertCell(),wi=document.createElement('input');wi.type='number';wi.min=0;wi.max=100;wi.step=1;wi.value=round(etf.weight*100,0);wi.dataset.ticker=etf.ticker;wi.className='etf-weight-input w-20 p-1 border border-gray-300 rounded-md text-sm';wi.addEventListener('input',updateTotalCompositionWeight);wc.appendChild(wi);totalCompWeight+=etf.weight*100;});domElements.totalCompositionWeightSpan.textContent=round(totalCompWeight,0);updateTotalCompositionWeight();updateComparisonTable(domElements.sectorComparisonTableBody,CONFIG.SECTORS,targetSectorsPercent,portfolioData.actualSectors,true);updateComparisonTable(domElements.geoComparisonTableBody,CONFIG.GEOGRAPHIES,targetGeographiesPercent,portfolioData.actualGeographies,true);createOrUpdateDoughnutChart('sector',domElements.sectorDoughnutChartCanvas,CONFIG.SECTORS,portfolioData.actualSectors,'Actual Sector Allocation');createOrUpdateDoughnutChart('geo',domElements.geoDoughnutChartCanvas,CONFIG.GEOGRAPHIES,portfolioData.actualGeographies,'Actual Geographic Allocation');
+    
+    function updatePortfolioDisplay(portfolioData, targetSectorsPercent, targetGeographiesPercent) {
+        const investmentAmount = parseFloat(domElements.investmentAmountInput.value) || 0;
+
+        let weightedReturn = 0, weightedExpense = 0;
+        const returnDetails = [], expenseDetails = [];
+        portfolioData.etfs.forEach(etf => {
+            weightedReturn += etf.y1_return * etf.weight;
+            weightedExpense += etf.expenseRatio * etf.weight;
+            returnDetails.push(`<li>${etf.ticker}: ${formatPercent(etf.weight)} * ${formatPercent(etf.y1_return)} = ${formatPercent(etf.y1_return * etf.weight, 3)}</li>`);
+            expenseDetails.push(`<li>${etf.ticker}: ${formatPercent(etf.weight)} * ${formatPercent(etf.expenseRatio, 4)} = ${formatPercent(etf.expenseRatio * etf.weight, 5)}</li>`);
+        });
+        domElements.indicatorReturnP.textContent = formatPercent(weightedReturn);
+        domElements.returnDetailsListUl.innerHTML = returnDetails.join('');
+        domElements.indicatorExpenseP.textContent = formatPercent(weightedExpense, 3);
+        domElements.expenseDetailsListUl.innerHTML = expenseDetails.join('');
+
+        const effAvgDevSectors = portfolioData.sectorSumAbsDiff * 100 / 2, sectorScore = Math.max(0, round(100 - effAvgDevSectors));
+        domElements.indicatorSectorMatchP.textContent = `${sectorScore}/100`;
+        domElements.indicatorSectorMatchDescP.textContent = getScoreDescription(sectorScore);
+        domElements.sectorEffectiveAvgDeviationSpan.textContent = round(effAvgDevSectors);
+        const sectorDevs = [];
+        CONFIG.SECTORS.forEach(s => {
+            const actual = (portfolioData.actualSectors[s] || 0) * 100, desired = (targetSectorsPercent[s] || 0), diff = Math.abs(actual - desired);
+            if (diff > 0.001) sectorDevs.push(`<li>${s}: ${round(diff)}% dev.</li>`);
+        });
+        domElements.sectorDeviationsListUl.innerHTML = sectorDevs.length ? sectorDevs.join('') : '<li>No sig. deviations.</li>';
+
+        const effAvgDevGeo = portfolioData.geoSumAbsDiff * 100 / 2, geoScore = Math.max(0, round(100 - effAvgDevGeo));
+        domElements.indicatorGeoMatchP.textContent = `${geoScore}/100`;
+        domElements.indicatorGeoMatchDescP.textContent = getScoreDescription(geoScore);
+        domElements.geoEffectiveAvgDeviationSpan.textContent = round(effAvgDevGeo);
+        const geoDevs = [];
+        CONFIG.GEOGRAPHIES.forEach(g => {
+            const actual = (portfolioData.actualGeographies[g] || 0) * 100, desired = (targetGeographiesPercent[g] || 0), diff = Math.abs(actual - desired);
+            if (diff > 0.001) geoDevs.push(`<li>${g}: ${round(diff)}% dev.</li>`);
+        });
+        domElements.geoDeviationsListUl.innerHTML = geoDevs.length ? geoDevs.join('') : '<li>No sig. deviations.</li>';
+
+        domElements.etfCompositionTableBody.innerHTML = '';
+        let totalCompositionWeight = 0;
+        portfolioData.etfs.forEach(etf => {
+            const row = domElements.etfCompositionTableBody.insertRow();
+            
+            const nameCell = row.insertCell();
+            nameCell.textContent = etf.name;
+            nameCell.className = 'text-left';
+
+            const tickerCell = row.insertCell();
+            tickerCell.textContent = etf.ticker;
+            tickerCell.className = 'text-left';
+            
+            const dollarAmountCell = row.insertCell();
+            const dollarAmount = investmentAmount * etf.weight;
+            dollarAmountCell.textContent = formatCurrency(dollarAmount);
+            dollarAmountCell.className = 'text-left'; 
+
+            const weightCell = row.insertCell();
+            const weightInput = document.createElement('input');
+            weightInput.type = 'number';
+            weightInput.min = 0; weightInput.max = 100; weightInput.step = 1;
+            weightInput.value = round(etf.weight * 100, 0);
+            weightInput.dataset.ticker = etf.ticker;
+            weightInput.className = 'etf-weight-input w-20 p-1 border border-gray-300 rounded-md text-sm text-center'; 
+            weightCell.appendChild(weightInput);
+            weightCell.className = 'text-left'; 
+
+            totalCompositionWeight += etf.weight * 100;
+        });
+        domElements.totalCompositionWeightSpan.textContent = round(totalCompositionWeight, 0);
+        updateTotalCompositionWeight();
+
+        updateComparisonTable(domElements.sectorComparisonTableBody, CONFIG.SECTORS, targetSectorsPercent, portfolioData.actualSectors, true);
+        updateComparisonTable(domElements.geoComparisonTableBody, CONFIG.GEOGRAPHIES, targetGeographiesPercent, portfolioData.actualGeographies, true);
+        createOrUpdateDoughnutChart('sector', domElements.sectorDoughnutChartCanvas, CONFIG.SECTORS, portfolioData.actualSectors, 'Actual Sector Allocation');
+        createOrUpdateDoughnutChart('geo', domElements.geoDoughnutChartCanvas, CONFIG.GEOGRAPHIES, portfolioData.actualGeographies, 'Actual Geographic Allocation');
+        
         domElements.aiInsightsCard.classList.add('hidden');domElements.aiInsightsContent.textContent='';domElements.aiInsightsError.textContent='';domElements.aiInsightsLoading.classList.add('hidden');
         domElements.diversificationSuggestionsCard.classList.add('hidden');domElements.diversificationSuggestionsContent.innerHTML='';domElements.diversificationSuggestionsError.textContent='';domElements.diversificationLoading.classList.add('hidden');
         domElements.aiDifferenceAnalysisCard.classList.add('hidden'); domElements.sectorDifferenceExplanation.textContent=''; domElements.sectorDifferenceSuggestions.textContent=''; domElements.geographicDifferenceExplanation.textContent=''; domElements.geographicDifferenceSuggestions.textContent=''; domElements.aiDifferenceAnalysisError.textContent=''; domElements.aiDifferenceAnalysisLoading.classList.add('hidden');
-        domElements.resultsSection.classList.remove('hidden');domElements.noSolutionMessageDiv.classList.add('hidden');domElements.portfolioIndicatorsDiv.classList.remove('hidden');domElements.etfCompositionSectionDiv.classList.remove('hidden');domElements.sectorComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');
+        
+        domElements.resultsSection.classList.remove('hidden');
+        domElements.noSolutionMessageDiv.classList.add('hidden');
+        domElements.portfolioIndicatorsDiv.classList.remove('hidden');
+        domElements.etfCompositionSectionDiv.classList.remove('hidden');
+        domElements.sectorComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');
+        domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');
     }
-    function updateComparisonTable(tbody,categories,desiredMap,actualMapDecimal,actualIsDecimal=true){tbody.innerHTML='';categories.forEach(cat=>{const desiredVal=desiredMap[cat]||0,actualVal=actualMapDecimal[cat]||0;const desiredP=desiredVal>1.5?desiredVal:desiredVal*100,actualP=actualIsDecimal?actualVal*100:actualVal;const diff=actualP-desiredP,row=tbody.insertRow();row.insertCell().textContent=cat;row.insertCell().textContent=round(desiredP);row.insertCell().textContent=round(actualP);const diffCell=row.insertCell();diffCell.textContent=round(diff);if(diff<-0.01)diffCell.classList.add('text-red-600');else if(diff>0.01)diffCell.classList.add('text-green-600');});}
+
+    function updateComparisonTable(tbody, categories, desiredMapPercent, actualMapDecimal, actualIsDecimal = true) {
+        tbody.innerHTML = ''; 
+        categories.forEach(category => {
+            const desiredValue = desiredMapPercent[category] || 0; 
+            const actualValueDecimal = actualMapDecimal[category] || 0; 
+            const desiredPercent = desiredValue > 1.5 ? desiredValue : desiredValue * 100; 
+            const actualPercent = actualIsDecimal ? actualValueDecimal * 100 : actualValueDecimal;
+            const difference = actualPercent - desiredPercent;
+
+            const row = tbody.insertRow();
+            
+            const categoryCell = row.insertCell();
+            categoryCell.textContent = category;
+            categoryCell.className = 'text-right'; // Changed to right-align
+
+            const desiredCell = row.insertCell();
+            desiredCell.textContent = round(desiredPercent);
+            desiredCell.className = 'text-right'; 
+
+            const actualCell = row.insertCell();
+            actualCell.textContent = round(actualPercent);
+            actualCell.className = 'text-right'; 
+            
+            const diffCell = row.insertCell();
+            diffCell.textContent = round(difference);
+            diffCell.className = 'text-right'; 
+            if (difference < -0.01) diffCell.classList.add('text-red-600'); 
+            else if (difference > 0.01) diffCell.classList.add('text-green-600'); 
+        });
+    }
+
     function createOrUpdateDoughnutChart(type,canvasEl,allLabels,dataMapDec,title){let chartInst=type==='sector'?sectorChartInstance:geoChartInstance;if(chartInst)chartInst.destroy();const filtLabels=[],filtData=[];allLabels.forEach(lbl=>{const val=dataMapDec[lbl]||0;if(val>=CONFIG.CHART_FILTER_THRESHOLD){filtLabels.push(lbl);filtData.push(round(val*100,2));}});const newCI=new Chart(canvasEl,{type:'doughnut',data:{labels:filtLabels,datasets:[{label:title,data:filtData,backgroundColor:CONFIG.CHART_COLORS,borderColor:'#fff',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:15,padding:10}},title:{display:true,text:title,font:{size:14,weight:'normal'}},tooltip:{callbacks:{label:ctx=>{let lbl=ctx.label||'';if(lbl)lbl+=': ';if(ctx.parsed!==null)lbl+=ctx.parsed+'%';return lbl;}}}}}});if(type==='sector')sectorChartInstance=newCI;else geoChartInstance=newCI;}
+    
     async function handleGeneratePortfolio() {
         domElements.formErrorMessageP.textContent = '';
-        // domElements.aiProfileRefinementSection.classList.add('hidden'); // Keep this section visible
+        // domElements.aiProfileRefinementSection.classList.add('hidden'); // This line is commented out
         selectedBaseProfileKey = null;
-        if (updateTotalAllocation('sector') !== 100 || updateTotalAllocation('geo') !== 100) { domElements.formErrorMessageP.textContent = 'Total sector and geographic allocations must each be 100%.'; domElements.userInputSection.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
-        displayLoading(true); domElements.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        originalTargetSectors = {}; domElements.sectorInputsDiv.querySelectorAll('input').forEach(i => originalTargetSectors[i.name] = (parseFloat(i.value)||0)/100);
-        originalTargetGeographies = {}; domElements.geoInputsDiv.querySelectorAll('input').forEach(i => originalTargetGeographies[i.name] = (parseFloat(i.value)||0)/100);
-        currentPortfolio = await findBestPortfolio(originalTargetSectors, originalTargetGeographies); displayLoading(false);
+        if (updateTotalAllocation('sector') !== 100 || updateTotalAllocation('geo') !== 100) { 
+            domElements.formErrorMessageP.textContent = 'Total sector and geographic allocations must each be 100%.'; 
+            domElements.userInputSection.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+            return; 
+        }
+        displayLoading(true); 
+        domElements.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        originalTargetSectors = {}; 
+        domElements.sectorInputsDiv.querySelectorAll('input').forEach(i => originalTargetSectors[i.name] = (parseFloat(i.value)||0)/100);
+        originalTargetGeographies = {}; 
+        domElements.geoInputsDiv.querySelectorAll('input').forEach(i => originalTargetGeographies[i.name] = (parseFloat(i.value)||0)/100);
+        
+        currentPortfolio = await findBestPortfolio(originalTargetSectors, originalTargetGeographies); 
+        displayLoading(false);
+        
         if (currentPortfolio && currentPortfolio.etfs && currentPortfolio.etfs.length > 0) {
             const origTSPerc = {}, origTGPerc = {};
             for (const k in originalTargetSectors) origTSPerc[k] = originalTargetSectors[k]*100;
             for (const k in originalTargetGeographies) origTGPerc[k] = originalTargetGeographies[k]*100;
             updatePortfolioDisplay(currentPortfolio, origTSPerc, origTGPerc);
-        } else displayNoSolution();
+        } else {
+            displayNoSolution();
+        }
     }
-    function updateTotalCompositionWeight() {const inputs=domElements.etfCompositionTableBody.querySelectorAll('.etf-weight-input');let total=0;inputs.forEach(i=>total+=parseFloat(i.value)||0);domElements.totalCompositionWeightSpan.textContent=round(total,0);domElements.compositionErrorP.textContent=(total!==100&&total!==0)?'Total weight must be 100% to recalculate.':'';return total;}
-    function handleRecalculatePortfolioInsights() {if(!currentPortfolio||!currentPortfolio.etfs||currentPortfolio.etfs.length===0){domElements.compositionErrorP.textContent='No portfolio to recalculate.';return;}const inputs=domElements.etfCompositionTableBody.querySelectorAll('.etf-weight-input');let newTotalWPerc=0;const newWeightsDec=[],etfDataRecalc=[];const currentEtfTickers=currentPortfolio.etfs.map(e=>e.ticker);currentEtfTickers.forEach(ticker=>{const etfFD=vanguardETFs.find(e=>e.ticker===ticker);if(!etfFD){console.error(`Data for ${ticker} missing.`);domElements.compositionErrorP.textContent=`Err: ${ticker} data missing.`;return;}const inputF=Array.from(inputs).find(inp=>inp.dataset.ticker===ticker);if(!inputF){console.error(`Weight for ${ticker} missing.`);domElements.compositionErrorP.textContent=`Err: ${ticker} weight missing.`;return;}const wPerc=parseFloat(inputF.value)||0;newTotalWPerc+=wPerc;newWeightsDec.push(wPerc/100);etfDataRecalc.push({...etfFD});});if(Math.abs(newTotalWPerc-100)>0.1){domElements.compositionErrorP.textContent='Total weight must be 100%.';return;}domElements.compositionErrorP.textContent='';const{actualSectors,actualGeographies,sectorSumAbsDiff,geoSumAbsDiff}=calculatePortfolioMetricsInternal(etfDataRecalc,newWeightsDec,originalTargetSectors,originalTargetGeographies);const recalcP={etfs:etfDataRecalc.map((e,i)=>({...e,weight:newWeightsDec[i]})),actualSectors,actualGeographies,sectorSumAbsDiff,geoSumAbsDiff};currentPortfolio=recalcP;const origTSPerc={},origTGPerc={};for(const k in originalTargetSectors)origTSPerc[k]=originalTargetSectors[k]*100;for(const k in originalTargetGeographies)origTGPerc[k]=originalTargetGeographies[k]*100;updatePortfolioDisplay(recalcP,origTSPerc,origTGPerc);domElements.resultsSection.scrollIntoView({behavior:'smooth',block:'start'});}
+
+    function updateTotalCompositionWeight() {
+        const inputs = domElements.etfCompositionTableBody.querySelectorAll('.etf-weight-input');
+        let total = 0;
+        inputs.forEach(i => total += parseFloat(i.value) || 0);
+        domElements.totalCompositionWeightSpan.textContent = round(total, 0);
+        domElements.compositionErrorP.textContent = (total !== 100 && total !== 0) ? 'Total weight must be 100% to recalculate.' : '';
+        
+        if (currentPortfolio && currentPortfolio.etfs) {
+            const investmentAmount = parseFloat(domElements.investmentAmountInput.value) || 0;
+            const rows = domElements.etfCompositionTableBody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                if (currentPortfolio.etfs[index]) {
+                    const weightInput = row.querySelector('.etf-weight-input');
+                    const weightPercent = parseFloat(weightInput.value) || 0;
+                    const dollarAmount = investmentAmount * (weightPercent / 100);
+                    if(row.cells[2]) { 
+                         row.cells[2].textContent = formatCurrency(dollarAmount);
+                         row.cells[2].className = 'text-left'; 
+                    }
+                }
+            });
+        }
+        return total;
+    }
+
+    function handleRecalculatePortfolioInsights() {
+        if(!currentPortfolio||!currentPortfolio.etfs||currentPortfolio.etfs.length===0){domElements.compositionErrorP.textContent='No portfolio to recalculate.';return;}
+        const inputs=domElements.etfCompositionTableBody.querySelectorAll('.etf-weight-input');
+        let newTotalWPerc=0;const newWeightsDec=[],etfDataRecalc=[];
+        const currentEtfTickers=currentPortfolio.etfs.map(e=>e.ticker);
+        currentEtfTickers.forEach(ticker=>{
+            const etfFD=vanguardETFs.find(e=>e.ticker===ticker);
+            if(!etfFD){console.error(`Data for ${ticker} missing.`);domElements.compositionErrorP.textContent=`Err: ${ticker} data missing.`;return;}
+            const inputF=Array.from(inputs).find(inp=>inp.dataset.ticker===ticker);
+            if(!inputF){console.error(`Weight for ${ticker} missing.`);domElements.compositionErrorP.textContent=`Err: ${ticker} weight missing.`;return;}
+            const wPerc=parseFloat(inputF.value)||0;
+            newTotalWPerc+=wPerc;
+            newWeightsDec.push(wPerc/100);
+            etfDataRecalc.push({...etfFD});
+        });
+        if(Math.abs(newTotalWPerc-100)>0.1){domElements.compositionErrorP.textContent='Total weight must be 100%.';return;}
+        domElements.compositionErrorP.textContent='';
+        const{actualSectors,actualGeographies,sectorSumAbsDiff,geoSumAbsDiff}=calculatePortfolioMetricsInternal(etfDataRecalc,newWeightsDec,originalTargetSectors,originalTargetGeographies);
+        const recalcP={etfs:etfDataRecalc.map((e,i)=>({...e,weight:newWeightsDec[i]})),actualSectors,actualGeographies,sectorSumAbsDiff,geoSumAbsDiff};
+        currentPortfolio=recalcP;
+        const origTSPerc={},origTGPerc={};
+        for(const k in originalTargetSectors)origTSPerc[k]=originalTargetSectors[k]*100;
+        for(const k in originalTargetGeographies)origTGPerc[k]=originalTargetGeographies[k]*100;
+        updatePortfolioDisplay(recalcP,origTSPerc,origTGPerc); 
+        domElements.resultsSection.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+
     function toggleIndicatorDetails(event){const h=event.currentTarget,c=h.nextElementSibling,a=h.querySelector('.arrow-icon');c.classList.toggle('open');a.classList.toggle('rotated');}
 
     async function handleGetAiInsights() { 
@@ -682,7 +898,7 @@
         }
 
         domElements.aiProfileRefinementLoading.classList.remove('hidden');
-        domElements.aiProfileRefinementError.textContent = ''; // Clear previous errors/retry messages
+        domElements.aiProfileRefinementError.textContent = ''; 
         domElements.aiProfileRefinementRationale.classList.add('hidden');
         domElements.aiProfileRefinementRationale.textContent = '';
         
@@ -702,7 +918,7 @@
         let baseSectorsString = ""; Object.entries(baseSectorsObj).forEach(([s,v]) => baseSectorsString += `${s}: ${v}%, `); baseSectorsString = baseSectorsString.slice(0, -2);
         let baseGeosString = ""; Object.entries(baseGeosObj).forEach(([g,v]) => baseGeosString += `${g}: ${v}%, `); baseGeosString = baseGeosString.slice(0, -2);
         
-        const MAX_RETRIES = 2; // Allow up to two automatic retries (total 3 attempts)
+        const MAX_RETRIES = 2; 
 
         async function attemptApiCallAndRefine(attemptNumber, previousFailureData = null) {
             let promptTextForGemini;
