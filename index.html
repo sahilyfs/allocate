@@ -608,7 +608,7 @@
     function createOrUpdateDoughnutChart(type,canvasEl,allLabels,dataMapDec,title){let chartInst=type==='sector'?sectorChartInstance:geoChartInstance;if(chartInst)chartInst.destroy();const filtLabels=[],filtData=[];allLabels.forEach(lbl=>{const val=dataMapDec[lbl]||0;if(val>=CONFIG.CHART_FILTER_THRESHOLD){filtLabels.push(lbl);filtData.push(round(val*100,2));}});const newCI=new Chart(canvasEl,{type:'doughnut',data:{labels:filtLabels,datasets:[{label:title,data:filtData,backgroundColor:CONFIG.CHART_COLORS,borderColor:'#fff',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:15,padding:10}},title:{display:true,text:title,font:{size:14,weight:'normal'}},tooltip:{callbacks:{label:ctx=>{let lbl=ctx.label||'';if(lbl)lbl+=': ';if(ctx.parsed!==null)lbl+=ctx.parsed+'%';return lbl;}}}}}});if(type==='sector')sectorChartInstance=newCI;else geoChartInstance=newCI;}
     async function handleGeneratePortfolio() {
         domElements.formErrorMessageP.textContent = '';
-        domElements.aiProfileRefinementSection.classList.add('hidden'); 
+        // domElements.aiProfileRefinementSection.classList.add('hidden'); // Keep this section visible
         selectedBaseProfileKey = null;
         if (updateTotalAllocation('sector') !== 100 || updateTotalAllocation('geo') !== 100) { domElements.formErrorMessageP.textContent = 'Total sector and geographic allocations must each be 100%.'; domElements.userInputSection.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
         displayLoading(true); domElements.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -711,9 +711,9 @@
             if (attemptNumber > 0 && previousFailureData) {
                 const { invalidSectors, sumSectorsVal, invalidGeos, sumGeosVal } = previousFailureData;
                 promptTextForGemini = `Your previous attempt (Attempt ${attemptNumber}) to refine an investment profile for user focus "${userFocus}" on base profile "${baseProfileName}" (Base Sectors: ${baseSectorsString}, Base Geos: ${baseGeosString}) was invalid.
-Your returned sector allocations summed to ${sumSectorsVal}% (details: ${JSON.stringify(invalidSectors)}). This MUST sum to exactly 100%.
-Your returned geographic allocations summed to ${sumGeosVal}% (details: ${JSON.stringify(invalidGeos)}). This MUST sum to exactly 100%.
-This is incorrect. Please correct your response. You MUST adjust the allocations you provide so that the total for sectors is exactly 100 and the total for geographies is exactly 100. Re-evaluate your previous numbers and make the necessary adjustments to meet these sum requirements precisely.
+Your returned sector allocations summed to ${sumSectorsVal}% (details: ${JSON.stringify(invalidSectors)}). This sum MUST be exactly 100%.
+Your returned geographic allocations summed to ${sumGeosVal}% (details: ${JSON.stringify(invalidGeos)}). This sum MUST be exactly 100%.
+This is critically incorrect. Please correct your response. You MUST adjust the allocations you provide so that the total for sectors is exactly 100% and the total for geographies is exactly 100%. Re-evaluate your previous numbers and make the necessary adjustments to meet these sum requirements precisely. Do not miss any categories.
 Provide new adjusted percentage allocations for ALL of the following sectors: ${CONFIG.SECTORS.join(', ')}, and ALL of the following geographies: ${CONFIG.GEOGRAPHIES.join(', ')}.
 Also, provide a brief (2-3 sentences) 'refinementRationale' explaining the key adjustments you made based on the original user focus: "${userFocus}".
 Return your response in the specified JSON format, adhering to the schema. Ensure all listed sectors and geographies are present in your response, even if their allocation is 0.`;
