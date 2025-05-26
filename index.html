@@ -359,7 +359,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="projectionTableBody" class="bg-white divide-y divide-gray-200">
-                                    </tbody>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -421,7 +421,8 @@
     </footer>
 
 <script>
-    // --- CONFIGURATION CONSTANTS ---
+// Copyright (c) 2025 AlloCate. All Rights Reserved.
+// --- CONFIGURATION CONSTANTS ---
     const CONFIG = { 
         SECTORS: ['Information Technology', 'Health Care', 'Financials', 'Consumer Discretionary', 'Communication Services', 'Industrials', 'Consumer Staples', 'Energy', 'Utilities', 'Real Estate', 'Materials'],
         GEOGRAPHIES: ['North America', 'Europe (Developed)', 'Asia Pacific (Developed)', 'Emerging Markets'],
@@ -501,13 +502,13 @@
     let vanguardETFs = [], originalTargetSectors = {}, originalTargetGeographies = {}, currentPortfolio = null, sectorChartInstance = null, geoChartInstance = null;
     let selectedBaseProfileKey = null; 
     let projectionChartInstance = null; 
-    let currentWeightedReturnForProjection = 0; // Store the rate for projections
+    let currentWeightedReturnForProjection = 0; 
 
     const domElements = {
         profileButtons: null, 
         investmentAmountInput: document.getElementById('investmentAmount'), 
-        contributionAmountInput: document.getElementById('contributionAmount'), // New
-        contributionFrequencySelect: document.getElementById('contributionFrequency'), // New
+        contributionAmountInput: document.getElementById('contributionAmount'), 
+        contributionFrequencySelect: document.getElementById('contributionFrequency'), 
         sectorInputsContainer: document.getElementById('sectorInputsContainer'), 
         sectorInputsDiv: document.getElementById('sectorInputs'),
         totalSectorAllocationSpan: document.getElementById('totalSectorAllocation'), 
@@ -706,30 +707,23 @@
 
             if (contributionAmount > 0) {
                 let C = parseFloat(contributionAmount);
-                let r_periodic, num_contributions_per_year;
+                let r_periodic, num_contributions_per_year, n_total_contribution_periods;
 
                 if (contributionFrequency === 'yearly') {
                     num_contributions_per_year = 1;
                     r_periodic = annualRateDecimal;
+                    n_total_contribution_periods = years;
                 } else { // monthly
                     num_contributions_per_year = 12;
                     r_periodic = annualRateDecimal / 12;
+                    n_total_contribution_periods = years * 12;
                 }
 
-                let tempFvContributions = 0;
-                // Calculate FV of annuity for each year's contributions up to 'years'
-                // This is a simplification: assumes contributions are made at the end of each sub-period
-                // and then grow at the compounded rate.
-                // A more precise calculation would sum the FV of each individual contribution.
-                // For simplicity here, we calculate the FV of an annuity.
                 if (r_periodic > 0) {
-                     // FV of an ordinary annuity: C * [((1+r)^n - 1) / r]
-                    let n_total_contribution_periods = years * num_contributions_per_year;
-                    tempFvContributions = C * ((Math.pow(1 + r_periodic, n_total_contribution_periods) - 1) / r_periodic);
-                } else { // If rate is 0
-                    tempFvContributions = C * (years * num_contributions_per_year);
+                    fvContributions = C * ((Math.pow(1 + r_periodic, n_total_contribution_periods) - 1) / r_periodic);
+                } else { 
+                    fvContributions = C * n_total_contribution_periods;
                 }
-                fvContributions = tempFvContributions;
             }
             projections.push({ year: years, value: fvPrincipal + fvContributions });
         });
@@ -748,7 +742,7 @@
         }
 
         const initialAmount = parseFloat(domElements.investmentAmountInput.value) || 0;
-        const annualRateDecimal = currentWeightedReturnForProjection; // Use stored rate
+        const annualRateDecimal = currentWeightedReturnForProjection; 
         const contributionAmount = parseFloat(domElements.contributionAmountInput.value) || 0;
         const contributionFrequency = domElements.contributionFrequencySelect.value;
 
@@ -759,8 +753,8 @@
         let yearCell = row.insertCell();
         let valueCell = row.insertCell();
         yearCell.textContent = '0';
-        valueCell.textContent = formatCurrency(initialAmount);
         yearCell.className = 'text-left';
+        valueCell.textContent = formatCurrency(initialAmount);
         valueCell.className = 'text-right';
 
         projections.forEach(p => {
@@ -768,8 +762,8 @@
             yearCell = row.insertCell();
             valueCell = row.insertCell();
             yearCell.textContent = p.year;
-            valueCell.textContent = formatCurrency(p.value);
             yearCell.className = 'text-left';
+            valueCell.textContent = formatCurrency(p.value);
             valueCell.className = 'text-right';
         });
 
@@ -783,7 +777,6 @@
         if (contributionAmount > 0) {
             chartTitle += ` with ${formatCurrency(contributionAmount)} ${contributionFrequency} contributions`;
         }
-
 
         projectionChartInstance = new Chart(domElements.projectionChartCanvas, {
             type: 'line',
@@ -809,7 +802,7 @@
                 },
                 plugins: {
                     legend: { display: false },
-                    title: { display: true, text: chartTitle },
+                    title: { display: true, text: chartTitle, font: {size: 14, weight: 'normal'} },
                     tooltip: { callbacks: { label: function(context) { return `Year ${context.label}: ${formatCurrency(context.parsed.y)}`; } } }
                 }
             }
@@ -834,7 +827,7 @@
         domElements.indicatorExpenseP.textContent = formatPercent(weightedExpense, 3);
         domElements.expenseDetailsListUl.innerHTML = expenseDetails.join('');
         
-        currentWeightedReturnForProjection = weightedReturn; // Store for projections
+        currentWeightedReturnForProjection = weightedReturn; 
 
         const effAvgDevSectors = portfolioData.sectorSumAbsDiff * 100 / 2, sectorScore = Math.max(0, round(100 - effAvgDevSectors));
         domElements.indicatorSectorMatchP.textContent = `${sectorScore}/100`;
@@ -877,10 +870,10 @@
         createOrUpdateDoughnutChart('sector', domElements.sectorDoughnutChartCanvas, CONFIG.SECTORS, portfolioData.actualSectors, 'Actual Sector Allocation');
         createOrUpdateDoughnutChart('geo', domElements.geoDoughnutChartCanvas, CONFIG.GEOGRAPHIES, portfolioData.actualGeographies, 'Actual Geographic Allocation');
         
-        if (weightedReturn > -100) { // Use a more reasonable check for valid return
-             displayProjectionTableAndChart(); // Call without args, it will pick up from global/DOM
+        if (typeof currentWeightedReturnForProjection !== 'undefined' && currentWeightedReturnForProjection > -100) { 
+             displayProjectionTableAndChart();
         } else {
-            domElements.projectionSectionDiv.classList.add('hidden');
+            if(domElements.projectionSectionDiv) domElements.projectionSectionDiv.classList.add('hidden');
         }
 
         domElements.aiInsightsCard.classList.add('hidden');domElements.aiInsightsContent.textContent='';domElements.aiInsightsError.textContent='';domElements.aiInsightsLoading.classList.add('hidden');
@@ -1252,7 +1245,6 @@ Return your response in the specified JSON format, adhering to the schema. Ensur
         updateTotalAllocation('sector');
         updateTotalAllocation('geo');
 
-        // Event listeners for projection inputs
         const updateProjectionDisplay = () => {
             if (currentPortfolio && typeof currentWeightedReturnForProjection !== 'undefined') {
                 displayProjectionTableAndChart();
