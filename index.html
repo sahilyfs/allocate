@@ -7,6 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -842,21 +847,47 @@
 
     function toggleIndicatorDetails(event){const h=event.currentTarget,c=h.nextElementSibling,a=h.querySelector('.arrow-icon');c.classList.toggle('open');a.classList.toggle('rotated');}
 
+    function getErrorMessageFromProxyResult(result, responseStatus) {
+        let errorString = `Proxy request failed with status ${responseStatus}`;
+        if (result && result.error) {
+            if (typeof result.error === 'string') {
+                errorString = result.error;
+            } else if (result.error.message && typeof result.error.message === 'string') {
+                errorString = result.error.message;
+            } else {
+                try {
+                    errorString = JSON.stringify(result.error);
+                } catch (e) {
+                    errorString = "An unknown error object was returned from the proxy.";
+                }
+            }
+        }
+        return errorString;
+    }
+
     async function handleGetAiInsights() { 
         if(!currentPortfolio||!currentPortfolio.actualSectors||!currentPortfolio.actualGeographies){domElements.aiInsightsError.textContent='Generate/recalculate a portfolio first.';domElements.aiInsightsCard.classList.remove('hidden');domElements.aiInsightsContent.textContent='';domElements.aiInsightsLoading.classList.add('hidden');domElements.diversificationSuggestionsCard.classList.add('hidden');domElements.aiDifferenceAnalysisCard.classList.add('hidden');return;}
         domElements.aiInsightsCard.classList.remove('hidden');domElements.aiInsightsLoading.classList.remove('hidden');domElements.aiInsightsContent.textContent='';domElements.aiInsightsError.textContent='';domElements.diversificationSuggestionsCard.classList.add('hidden');domElements.aiDifferenceAnalysisCard.classList.add('hidden');
         let sDataStr="",gDataStr="";for(const s in currentPortfolio.actualSectors){const p=currentPortfolio.actualSectors[s]*100;if(p>0.1)sDataStr+=`${s}: ${round(p,1)}%, `;}sDataStr=sDataStr.slice(0,-2);for(const g in currentPortfolio.actualGeographies){const p=currentPortfolio.actualGeographies[g]*100;if(p>0.1)gDataStr+=`${g}: ${round(p,1)}%, `;}gDataStr=gDataStr.slice(0,-2);
         const promptTextForGemini=`You are a helpful financial assistant. Based on the following ETF portfolio's actual allocations, provide a brief (2-4 sentences) qualitative commentary. Discuss potential characteristics, strengths, or areas a user might want to consider further. Be balanced and objective. Do not give financial advice or make any specific investment recommendations. Actual Sector Allocations: ${sDataStr||'None significant'}. Actual Geographic Allocations: ${gDataStr||'None significant'}.`;
-        const geminiModel = "gemini-2.0-flash";
+        const geminiModel = "gemini-2.5-pro-preview-05-06";
         const geminiApiPayload = { contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }] };
         const proxyUrl = "/api/geminiProxy";
         try{
             const response = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload }) });
             const result = await response.json();
-            if(!response.ok){ const errorDetail = result?.error || `Proxy request failed with status ${response.status}`; console.error('Error from proxy for AI insights:', result); throw new Error(errorDetail); }
+            if(!response.ok){ 
+                const errorMsg = getErrorMessageFromProxyResult(result, response.status);
+                console.error('Error from proxy for AI insights:', result); 
+                throw new Error(errorMsg); 
+            }
             if(result.candidates?.[0]?.content?.parts?.[0]?.text) { domElements.aiInsightsContent.textContent = result.candidates[0].content.parts[0].text.trim(); } 
             else { console.error('Unexpected data structure from proxy/Gemini (Insights):', result); throw new Error('Could not extract insights from API response via proxy.'); }
-        }catch(error){ console.error('Error fetching AI insights (via proxy):',error); const displayMessage = error instanceof Error && error.message ? error.message : String(error); domElements.aiInsightsError.textContent=`Failed to load AI insights. ${displayMessage || 'An unexpected error occurred.'} Try again.`; domElements.aiInsightsContent.textContent='';
+        }catch(error){ 
+            console.error('Error fetching AI insights (via proxy):',error); 
+            const displayMessage = error instanceof Error && error.message ? error.message : String(error);
+            domElements.aiInsightsError.textContent=`Failed to load AI insights. ${displayMessage || 'An unexpected error occurred.'} Try again.`; 
+            domElements.aiInsightsContent.textContent='';
         }finally{domElements.aiInsightsLoading.classList.add('hidden');domElements.aiInsightsCard.scrollIntoView({behavior:'smooth',block:'nearest'});}
     }
 
@@ -868,19 +899,27 @@
         let sDataStr="",gDataStr="";for(const s in currentPortfolio.actualSectors){const p=currentPortfolio.actualSectors[s]*100;if(p>0.1)sDataStr+=`${s}: ${round(p,1)}%, `;}sDataStr=sDataStr.slice(0,-2);for(const g in currentPortfolio.actualGeographies){const p=currentPortfolio.actualGeographies[g]*100;if(p>0.1)gDataStr+=`${g}: ${round(p,1)}%, `;}gDataStr=gDataStr.slice(0,-2);const currentPortfolioETFsString=currentPortfolio.etfs.map(e=>`${e.name} (${e.ticker})`).join(', ');
         const promptTextForGemini=`You are a helpful financial assistant. Current portfolio consists of: ${currentPortfolioETFsString}. Current portfolio actual sector allocations: ${sDataStr||'None significant'}. Current portfolio actual geographic allocations: ${gDataStr||'None significant'}. Available ETFs to suggest from (provide ticker and name): ${JSON.stringify(availableETFsForSuggestion)}. Based on this, suggest 1 or 2 additional ETFs from the 'Available ETFs' list that could enhance diversification for the current portfolio. For each suggestion, provide its ticker, name, and a detailed (3-4 sentences) rationale. This rationale should clearly explain how the suggested ETF would enhance diversification, specifically mentioning which underrepresented sectors or geographies it covers, or what different investment style or market cap it introduces, and how it complements the existing portfolio's exposures. Do not suggest ETFs already in the current portfolio. Do not give financial advice or make any specific investment recommendations. Ensure your response is in the specified JSON format.`;
         const schema={type:"ARRAY",items:{type:"OBJECT",properties:{"ticker":{"type":"STRING"},"name":{"type":"STRING"},"rationale":{"type":"STRING"}},required:["ticker","name","rationale"]}};
-        const geminiModel = "gemini-2.0-flash";
+        const geminiModel = "gemini-2.5-pro-preview-05-06"; 
         const geminiApiPayload = { contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
         const proxyUrl = "/api/geminiProxy";
         try{
             const response = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload }) });
             const result = await response.json();
-            if(!response.ok){ const errorDetail = result?.error || `Proxy request failed with status ${response.status}`; console.error('Error from proxy for diversification suggestions:', result); throw new Error(errorDetail); }
+            if(!response.ok){ 
+                const errorMsg = getErrorMessageFromProxyResult(result, response.status);
+                console.error('Error from proxy for diversification suggestions:', result); 
+                throw new Error(errorMsg); 
+            }
             if(result.candidates?.[0]?.content?.parts?.[0]?.text){
                 const suggestions=JSON.parse(result.candidates[0].content.parts[0].text);
                 if(suggestions&&suggestions.length>0){ let html='<ul class="space-y-3">'; suggestions.forEach(sugg=>{html+=`<li class="p-3 border border-teal-300 rounded-md bg-teal-50 shadow-sm"><p class="font-semibold text-teal-700">${sugg.name} (${sugg.ticker})</p><p class="mt-1 text-xs text-teal-600">${sugg.rationale}</p></li>`;}); html+='</ul>'; domElements.diversificationSuggestionsContent.innerHTML=html;
                 } else { domElements.diversificationSuggestionsContent.innerHTML='<p>No specific diversification suggestions could be generated at this time, or the AI determined the portfolio is already well-diversified with the available options.</p>'; }
             } else { console.error('Unexpected data structure from proxy/Gemini (Diversification):',result); throw new Error('Could not extract diversification suggestions from API response via proxy.'); }
-        }catch(error){ console.error('Error fetching diversification suggestions (via proxy):',error); const displayMessage = error instanceof Error && error.message ? error.message : String(error); domElements.diversificationSuggestionsError.textContent=`Failed to load suggestions. ${displayMessage || 'An unexpected error occurred.'} Try again.`; domElements.diversificationSuggestionsContent.innerHTML='';
+        }catch(error){ 
+            console.error('Error fetching diversification suggestions (via proxy):',error); 
+            const displayMessage = error instanceof Error && error.message ? error.message : String(error);
+            domElements.diversificationSuggestionsError.textContent=`Failed to load suggestions. ${displayMessage || 'An unexpected error occurred.'} Try again.`; 
+            domElements.diversificationSuggestionsContent.innerHTML='';
         }finally{domElements.diversificationLoading.classList.add('hidden');domElements.diversificationSuggestionsCard.scrollIntoView({behavior:'smooth',block:'nearest'});}}
 
     async function handleRefineProfileWithAi() {
@@ -944,7 +983,7 @@ Return your response in the specified JSON format, adhering to the schema. Ensur
             const sectorProperties = {}; CONFIG.SECTORS.forEach(s => sectorProperties[s] = {"type":"NUMBER"});
             const geoProperties = {}; CONFIG.GEOGRAPHIES.forEach(g => geoProperties[g] = {"type":"NUMBER"});
             const schema = { type: "OBJECT", properties: { "adjustedSectors": { type: "OBJECT", properties: sectorProperties, required: CONFIG.SECTORS }, "adjustedGeographies": { type: "OBJECT", properties: geoProperties, required: CONFIG.GEOGRAPHIES }, "refinementRationale": { "type": "STRING" } }, required: ["adjustedSectors", "adjustedGeographies", "refinementRationale"] };
-            const geminiModel = "gemini-2.0-flash";
+            const geminiModel = "gemini-2.5-pro-preview-05-06"; 
             const geminiApiPayload = { contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
             const proxyUrl = "/api/geminiProxy";
 
@@ -952,9 +991,9 @@ Return your response in the specified JSON format, adhering to the schema. Ensur
             const result = await response.json();
 
             if (!response.ok) {
-                const errorDetail = result?.error || `Proxy request failed with status ${response.status}`;
+                const errorMsg = getErrorMessageFromProxyResult(result, response.status);
                 console.error(`Error from proxy for profile refinement (Attempt ${attemptNumber + 1}):`, result);
-                throw new Error(errorDetail); 
+                throw new Error(errorMsg); 
             }
 
             if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
@@ -1018,13 +1057,17 @@ Return your response in the specified JSON format, adhering to the schema. Ensur
         const availableETFsForSuggestion = RAW_VANGUARD_ETFS.filter(etf => !currentPortfolio.etfs.find(pEtf => pEtf.ticker === etf.ticker)).map(etf => ({ ticker: etf.ticker, name: etf.name }));
         const promptTextForGemini = `You are a helpful financial analyst. The user's desired portfolio allocations and the actual allocations of their generated ETF portfolio are provided below. Current ETFs in portfolio: ${currentETFsInPortfolio}. Available ETFs for suggestions (if needed, provide ticker and name): ${JSON.stringify(availableETFsForSuggestion)}. SECTOR ANALYSIS: Desired Sector Allocations: ${JSON.stringify(desiredSectorsPercent)}. Actual Sector Allocations: ${JSON.stringify(actualSectorsPercent)}. Please: 1. Identify the 2-3 most significant differences (over or underweight) between desired and actual sector allocations. 2. Briefly explain potential reasons for these sector differences, considering the ETFs in the current portfolio. 3. Suggest 1-2 actionable steps the user could consider to reduce these sector differences. This might involve adjusting weights of current ETFs or, if a large gap persists, suggesting an alternative ETF from the 'Available ETFs' list that could help (mention its name and ticker). GEOGRAPHIC ANALYSIS: Desired Geographic Allocations: ${JSON.stringify(desiredGeosPercent)}. Actual Geographic Allocations: ${JSON.stringify(actualGeosPercent)}. Please: 1. Identify the 2-3 most significant differences (over or underweight) between desired and actual geographic allocations. 2. Briefly explain potential reasons for these geographic differences, considering the ETFs in the current portfolio. 3. Suggest 1-2 actionable steps the user could consider to reduce these geographic differences. This might involve adjusting weights of current ETFs or, if a large gap persists, suggesting an alternative ETF from the 'Available ETFs' list that could help (mention its name and ticker). IMPORTANT: - Be concise and clear. - Focus on explaining the 'why' behind differences and practical 'how-to' for adjustments. - Acknowledge if perfect alignment might be difficult with the current setup. - Do NOT give financial advice or make specific investment recommendations beyond suggesting alignment strategies. - Return your response in the specified JSON format.`;
         const schema = { type: "OBJECT", properties: { "sectorDifferenceExplanation": { "type": "STRING" }, "sectorDifferenceSuggestions": { "type": "STRING" }, "geographicDifferenceExplanation": { "type": "STRING" }, "geographicDifferenceSuggestions": { "type": "STRING" } }, required: ["sectorDifferenceExplanation", "sectorDifferenceSuggestions", "geographicDifferenceExplanation", "geographicDifferenceSuggestions"] };
-        const geminiModel = "gemini-2.0-flash";
+        const geminiModel = "gemini-2.5-pro-preview-05-06"; // Updated model
         const geminiApiPayload = { contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
         const proxyUrl = "/api/geminiProxy";
         try {
             const response = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: geminiModel, geminiPayload: geminiApiPayload }) });
             const result = await response.json();
-            if (!response.ok) { const errorDetail = result?.error || `Proxy request failed with status ${response.status}`; console.error('Error from proxy for difference analysis:', result); throw new Error(errorDetail); }
+            if (!response.ok) { 
+                const errorMsg = getErrorMessageFromProxyResult(result, response.status);
+                console.error('Error from proxy for difference analysis:', result); 
+                throw new Error(errorMsg); 
+            }
             if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
                 const analysis = JSON.parse(result.candidates[0].content.parts[0].text);
                 domElements.sectorDifferenceExplanation.textContent = analysis.sectorDifferenceExplanation || "No specific explanation provided.";
@@ -1032,7 +1075,10 @@ Return your response in the specified JSON format, adhering to the schema. Ensur
                 domElements.geographicDifferenceExplanation.textContent = analysis.geographicDifferenceExplanation || "No specific explanation provided.";
                 domElements.geographicDifferenceSuggestions.textContent = analysis.geographicDifferenceSuggestions || "No specific suggestions provided.";
             } else { console.error('Unexpected data structure from proxy/Gemini (Difference Analysis):', result); throw new Error('Could not extract difference analysis from API response via proxy.'); }
-        } catch (error) { console.error('Error fetching AI difference analysis (via proxy):', error); const displayMessage = error instanceof Error && error.message ? error.message : String(error); domElements.aiDifferenceAnalysisError.textContent = `Failed to load difference analysis. ${displayMessage || 'An unexpected error occurred.'} Please try again.`;
+        } catch (error) { 
+            console.error('Error fetching AI difference analysis (via proxy):', error); 
+            const displayMessage = error instanceof Error && error.message ? error.message : String(error);
+            domElements.aiDifferenceAnalysisError.textContent = `Failed to load difference analysis. ${displayMessage || 'An unexpected error occurred.'} Please try again.`;
         } finally { domElements.aiDifferenceAnalysisLoading.classList.add('hidden'); domElements.aiDifferenceAnalysisCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
     }
 
