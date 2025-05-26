@@ -294,6 +294,81 @@
                      <button id="getDifferenceAnalysisBtn" class="bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 w-full sm:w-auto">✨ Analyze Allocation Differences</button>
                 </div>
             </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <div class="card">
+                    <h3 class="text-lg font-semibold mb-3">Sector Exposure Comparison</h3>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="min-w-full divide-y divide-gray-200 text-sm custom-table">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sectorComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4" style="height: 250px;"><canvas id="sectorDoughnutChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3 class="text-lg font-semibold mb-3">Geographic Exposure Comparison</h3>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="min-w-full divide-y divide-gray-200 text-sm custom-table">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Geography</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
+                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="geoComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4" style="height: 250px;"><canvas id="geoDoughnutChart"></canvas></div>
+                </div>
+            </div>
+            
+            <div id="projectionSection" class="card hidden mt-6">
+                <h3 class="text-lg font-semibold mb-3">Investment Growth Projection</h3>
+                <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                    <div>
+                        <label for="contributionAmount" class="block text-sm font-medium text-gray-700">Periodic Contribution ($)</label>
+                        <input type="number" id="contributionAmount" value="0" min="0" class="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                    </div>
+                    <div>
+                        <label for="contributionFrequency" class="block text-sm font-medium text-gray-700">Contribution Frequency</label>
+                        <select id="contributionFrequency" class="mt-1 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                            <option value="yearly" selected>Yearly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-md font-medium mb-2">Projected Value Over Time</h4>
+                        <div class="overflow-x-auto max-h-72">
+                            <table id="projectionTable" class="min-w-full divide-y divide-gray-200 text-sm custom-table">
+                                <thead class="bg-gray-50 sticky top-0">
+                                    <tr>
+                                        <th class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
+                                        <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Projected Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projectionTableBody" class="bg-white divide-y divide-gray-200">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="mt-4 md:mt-0" style="height: 300px;">
+                        <canvas id="projectionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
 
             <div id="aiInsightsCard" class="card ai-feature-card ai-insights-card hidden mt-6">
                 <h3 class="text-lg font-semibold mb-2 text-sky-800">✨ AI Portfolio Commentary</h3>
@@ -338,42 +413,6 @@
                 <p id="aiDifferenceAnalysisError" class="text-sm text-red-600 mt-2"></p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                <div class="card">
-                    <h3 class="text-lg font-semibold mb-3">Sector Exposure Comparison</h3>
-                    <div class="overflow-x-auto max-h-96">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm custom-table">
-                            <thead class="bg-gray-50 sticky top-0">
-                                <tr>
-                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th>
-                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
-                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
-                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sectorComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody>
-                        </table>
-                    </div>
-                    <div class="mt-4" style="height: 250px;"><canvas id="sectorDoughnutChart"></canvas></div>
-                </div>
-                <div class="card">
-                    <h3 class="text-lg font-semibold mb-3">Geographic Exposure Comparison</h3>
-                    <div class="overflow-x-auto max-h-96">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm custom-table">
-                            <thead class="bg-gray-50 sticky top-0">
-                                <tr>
-                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Geography</th>
-                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Desired (%)</th>
-                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actual (%)</th>
-                                    <th class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Difference (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="geoComparisonTableBody" class="bg-white divide-y divide-gray-200"></tbody>
-                        </table>
-                    </div>
-                    <div class="mt-4" style="height: 250px;"><canvas id="geoDoughnutChart"></canvas></div>
-                </div>
-            </div>
         </section>
     </main>
 
@@ -446,7 +485,8 @@
         MAX_ETFS_IN_PORTFOLIO: 3, 
         WEIGHT_STEP: 0.05, 
         CHART_COLORS: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6366F1', '#0EA5E9', '#FCD34D', '#A78BFA', '#2DD4BF'],
-        CHART_FILTER_THRESHOLD: 0.001 
+        CHART_FILTER_THRESHOLD: 0.001,
+        PROJECTION_YEARS: [5, 10, 20, 30, 40]
     };
 
     const RAW_VANGUARD_ETFS = [ 
@@ -460,10 +500,14 @@
 
     let vanguardETFs = [], originalTargetSectors = {}, originalTargetGeographies = {}, currentPortfolio = null, sectorChartInstance = null, geoChartInstance = null;
     let selectedBaseProfileKey = null; 
+    let projectionChartInstance = null; 
+    let currentWeightedReturnForProjection = 0; // Store the rate for projections
 
     const domElements = {
         profileButtons: null, 
         investmentAmountInput: document.getElementById('investmentAmount'), 
+        contributionAmountInput: document.getElementById('contributionAmount'), // New
+        contributionFrequencySelect: document.getElementById('contributionFrequency'), // New
         sectorInputsContainer: document.getElementById('sectorInputsContainer'), 
         sectorInputsDiv: document.getElementById('sectorInputs'),
         totalSectorAllocationSpan: document.getElementById('totalSectorAllocation'), 
@@ -528,6 +572,9 @@
         aiProfileRefinementLoading: document.getElementById('aiProfileRefinementLoading'),
         aiProfileRefinementError: document.getElementById('aiProfileRefinementError'),
         aiProfileRefinementRationale: document.getElementById('aiProfileRefinementRationale'),
+        projectionSectionDiv: document.getElementById('projectionSection'),
+        projectionTableBody: document.getElementById('projectionTableBody'),
+        projectionChartCanvas: document.getElementById('projectionChart')
     };
 
     const round = (num, places = 2) => parseFloat(num.toFixed(places));
@@ -616,32 +663,161 @@
     function getCombinations(arr, k) { if (k === 0) return [[]]; if (arr.length === 0) return []; const first = arr[0], rest = arr.slice(1); const combsWithoutFirst = getCombinations(rest, k), combsWithFirst = getCombinations(rest, k - 1).map(comb => [first, ...comb]); return [...combsWithFirst, ...combsWithoutFirst]; }
     function* generateWeightCombinations(numEtfs, step) { const numSteps = Math.round(1/step); if (numEtfs===1) yield [1.0]; else if (numEtfs===2) for(let i=0;i<=numSteps;i++){const w1=i*step,w2=1.0-w1;if(w2>=-0.0001)yield [round(w1,4),round(w2,4)];} else if (numEtfs===3) for(let i=0;i<=numSteps;i++){const w1=i*step;for(let j=0;j<=numSteps-i;j++){const w2=j*step,w3=1.0-w1-w2;if(w3>=-0.0001)yield [round(w1,4),round(w2,4),round(w3,4)];}}}
     function calculatePortfolioMetricsInternal(etfSel, weights, targetS, targetG) { const actualS={},actualG={};CONFIG.SECTORS.forEach(s=>actualS[s]=0);CONFIG.GEOGRAPHIES.forEach(g=>actualG[g]=0);etfSel.forEach((etf,idx)=>{const w=weights[idx];CONFIG.SECTORS.forEach(s=>actualS[s]+=(etf.sectors[s]||0)*w);CONFIG.GEOGRAPHIES.forEach(g=>actualG[g]+=(etf.geographies[g]||0)*w);});let sSumAD=0;CONFIG.SECTORS.forEach(s=>sSumAD+=Math.abs(actualS[s]-(targetS[s]||0)));let gSumAD=0;CONFIG.GEOGRAPHIES.forEach(g=>gSumAD+=Math.abs(actualG[g]-(targetG[g]||0)));return{actualSectors:actualS,actualGeographies:actualG,sectorSumAbsDiff:sSumAD,geoSumAbsDiff:gSumAD};}
+    
     function displayLoading(isLoading) { 
         domElements.loadingIndicatorDiv.classList.toggle('hidden',!isLoading);
         domElements.loadingIndicatorDiv.querySelector('p').textContent=isLoading?'Optimizing allocation...':'Optimizing portfolio...';
         if(isLoading){
             domElements.resultsSection.classList.remove('hidden');domElements.noSolutionMessageDiv.classList.add('hidden');
-            domElements.portfolioIndicatorsDiv.classList.add('hidden');domElements.etfCompositionSectionDiv.classList.add('hidden');
-            domElements.aiInsightsCard.classList.add('hidden');domElements.diversificationSuggestionsCard.classList.add('hidden');
+            domElements.portfolioIndicatorsDiv.classList.add('hidden');
+            domElements.etfCompositionSectionDiv.classList.add('hidden');
+            domElements.aiInsightsCard.classList.add('hidden');
+            domElements.diversificationSuggestionsCard.classList.add('hidden');
             domElements.aiDifferenceAnalysisCard.classList.add('hidden'); 
             domElements.sectorComparisonTableBody.parentElement.parentElement.parentElement.classList.add('hidden');
             domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.add('hidden');
+            domElements.projectionSectionDiv.classList.add('hidden'); 
         }else{
-            domElements.portfolioIndicatorsDiv.classList.remove('hidden');domElements.etfCompositionSectionDiv.classList.remove('hidden');
+            domElements.portfolioIndicatorsDiv.classList.remove('hidden');
+            domElements.etfCompositionSectionDiv.classList.remove('hidden');
             domElements.sectorComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');
             domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.remove('hidden');
         }
     }
     function displayNoSolution() { 
-        domElements.resultsSection.classList.remove('hidden');domElements.noSolutionMessageDiv.classList.remove('hidden');
-        domElements.portfolioIndicatorsDiv.classList.add('hidden');domElements.etfCompositionSectionDiv.classList.add('hidden');
-        domElements.aiInsightsCard.classList.add('hidden');domElements.diversificationSuggestionsCard.classList.add('hidden');
+        domElements.resultsSection.classList.remove('hidden');
+        domElements.noSolutionMessageDiv.classList.remove('hidden');
+        domElements.portfolioIndicatorsDiv.classList.add('hidden');
+        domElements.etfCompositionSectionDiv.classList.add('hidden');
+        domElements.aiInsightsCard.classList.add('hidden');
+        domElements.diversificationSuggestionsCard.classList.add('hidden');
         domElements.aiDifferenceAnalysisCard.classList.add('hidden'); 
         domElements.sectorComparisonTableBody.parentElement.parentElement.parentElement.classList.add('hidden');
         domElements.geoComparisonTableBody.parentElement.parentElement.parentElement.classList.add('hidden');
+        domElements.projectionSectionDiv.classList.add('hidden'); 
     }
     function getScoreDescription(score) { if(score>=90)return"Excellent";if(score>=80)return"Good";if(score>=70)return"Fair";return"Needs Improvement";}
     
+    function calculateProjections(initialAmount, annualRateDecimal, projectionYearsArray, contributionAmount, contributionFrequency) {
+        const projections = [];
+        projectionYearsArray.forEach(years => {
+            let fvPrincipal = initialAmount * Math.pow((1 + annualRateDecimal), years);
+            let fvContributions = 0;
+
+            if (contributionAmount > 0) {
+                let C = parseFloat(contributionAmount);
+                let r_periodic, num_contributions_per_year;
+
+                if (contributionFrequency === 'yearly') {
+                    num_contributions_per_year = 1;
+                    r_periodic = annualRateDecimal;
+                } else { // monthly
+                    num_contributions_per_year = 12;
+                    r_periodic = annualRateDecimal / 12;
+                }
+
+                let tempFvContributions = 0;
+                // Calculate FV of annuity for each year's contributions up to 'years'
+                // This is a simplification: assumes contributions are made at the end of each sub-period
+                // and then grow at the compounded rate.
+                // A more precise calculation would sum the FV of each individual contribution.
+                // For simplicity here, we calculate the FV of an annuity.
+                if (r_periodic > 0) {
+                     // FV of an ordinary annuity: C * [((1+r)^n - 1) / r]
+                    let n_total_contribution_periods = years * num_contributions_per_year;
+                    tempFvContributions = C * ((Math.pow(1 + r_periodic, n_total_contribution_periods) - 1) / r_periodic);
+                } else { // If rate is 0
+                    tempFvContributions = C * (years * num_contributions_per_year);
+                }
+                fvContributions = tempFvContributions;
+            }
+            projections.push({ year: years, value: fvPrincipal + fvContributions });
+        });
+        return projections;
+    }
+
+
+    function displayProjectionTableAndChart() {
+        if (!currentPortfolio || typeof currentWeightedReturnForProjection === 'undefined') {
+            domElements.projectionSectionDiv.classList.add('hidden');
+            return;
+        }
+        if (!domElements.projectionSectionDiv || !domElements.projectionTableBody || !domElements.projectionChartCanvas) {
+            console.error("Projection DOM elements not found.");
+            return;
+        }
+
+        const initialAmount = parseFloat(domElements.investmentAmountInput.value) || 0;
+        const annualRateDecimal = currentWeightedReturnForProjection; // Use stored rate
+        const contributionAmount = parseFloat(domElements.contributionAmountInput.value) || 0;
+        const contributionFrequency = domElements.contributionFrequencySelect.value;
+
+        const projections = calculateProjections(initialAmount, annualRateDecimal, CONFIG.PROJECTION_YEARS, contributionAmount, contributionFrequency);
+        
+        domElements.projectionTableBody.innerHTML = ''; 
+        let row = domElements.projectionTableBody.insertRow();
+        let yearCell = row.insertCell();
+        let valueCell = row.insertCell();
+        yearCell.textContent = '0';
+        valueCell.textContent = formatCurrency(initialAmount);
+        yearCell.className = 'text-left';
+        valueCell.className = 'text-right';
+
+        projections.forEach(p => {
+            row = domElements.projectionTableBody.insertRow();
+            yearCell = row.insertCell();
+            valueCell = row.insertCell();
+            yearCell.textContent = p.year;
+            valueCell.textContent = formatCurrency(p.value);
+            yearCell.className = 'text-left';
+            valueCell.className = 'text-right';
+        });
+
+        if (projectionChartInstance) {
+            projectionChartInstance.destroy();
+        }
+        const chartLabels = [0, ...projections.map(p => p.year)];
+        const chartData = [initialAmount, ...projections.map(p => round(p.value, 0))];
+        
+        let chartTitle = `Projected Growth of ${formatCurrency(initialAmount)} at ${formatPercent(annualRateDecimal, 2)} p.a.`;
+        if (contributionAmount > 0) {
+            chartTitle += ` with ${formatCurrency(contributionAmount)} ${contributionFrequency} contributions`;
+        }
+
+
+        projectionChartInstance = new Chart(domElements.projectionChartCanvas, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Projected Investment Value',
+                    data: chartData,
+                    borderColor: CONFIG.CHART_COLORS[6], 
+                    backgroundColor: CONFIG.CHART_COLORS[6] + '33', 
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false, 
+                        ticks: { callback: function(value) { return formatCurrency(value); } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: chartTitle },
+                    tooltip: { callbacks: { label: function(context) { return `Year ${context.label}: ${formatCurrency(context.parsed.y)}`; } } }
+                }
+            }
+        });
+        domElements.projectionSectionDiv.classList.remove('hidden');
+    }
+
+
     function updatePortfolioDisplay(portfolioData, targetSectorsPercent, targetGeographiesPercent) {
         const investmentAmount = parseFloat(domElements.investmentAmountInput.value) || 0;
 
@@ -657,6 +833,8 @@
         domElements.returnDetailsListUl.innerHTML = returnDetails.join('');
         domElements.indicatorExpenseP.textContent = formatPercent(weightedExpense, 3);
         domElements.expenseDetailsListUl.innerHTML = expenseDetails.join('');
+        
+        currentWeightedReturnForProjection = weightedReturn; // Store for projections
 
         const effAvgDevSectors = portfolioData.sectorSumAbsDiff * 100 / 2, sectorScore = Math.max(0, round(100 - effAvgDevSectors));
         domElements.indicatorSectorMatchP.textContent = `${sectorScore}/100`;
@@ -685,29 +863,10 @@
         portfolioData.etfs.forEach(etf => {
             const row = domElements.etfCompositionTableBody.insertRow();
             
-            const nameCell = row.insertCell();
-            nameCell.textContent = etf.name;
-            nameCell.className = 'text-left';
-
-            const tickerCell = row.insertCell();
-            tickerCell.textContent = etf.ticker;
-            tickerCell.className = 'text-left';
-            
-            const dollarAmountCell = row.insertCell();
-            const dollarAmount = investmentAmount * etf.weight;
-            dollarAmountCell.textContent = formatCurrency(dollarAmount);
-            dollarAmountCell.className = 'text-left'; 
-
-            const weightCell = row.insertCell();
-            const weightInput = document.createElement('input');
-            weightInput.type = 'number';
-            weightInput.min = 0; weightInput.max = 100; weightInput.step = 1;
-            weightInput.value = round(etf.weight * 100, 0);
-            weightInput.dataset.ticker = etf.ticker;
-            weightInput.className = 'etf-weight-input w-20 p-1 border border-gray-300 rounded-md text-sm text-center'; 
-            weightCell.appendChild(weightInput);
-            weightCell.className = 'text-left'; 
-
+            const nameCell = row.insertCell(); nameCell.textContent = etf.name; nameCell.className = 'text-left';
+            const tickerCell = row.insertCell(); tickerCell.textContent = etf.ticker; tickerCell.className = 'text-left';
+            const dollarAmountCell = row.insertCell(); const dollarAmount = investmentAmount * etf.weight; dollarAmountCell.textContent = formatCurrency(dollarAmount); dollarAmountCell.className = 'text-left'; 
+            const weightCell = row.insertCell(); const weightInput = document.createElement('input'); weightInput.type = 'number'; weightInput.min = 0; weightInput.max = 100; weightInput.step = 1; weightInput.value = round(etf.weight * 100, 0); weightInput.dataset.ticker = etf.ticker; weightInput.className = 'etf-weight-input w-20 p-1 border border-gray-300 rounded-md text-sm text-center'; weightInput.addEventListener('input', updateTotalCompositionWeight); weightCell.appendChild(weightInput); weightCell.className = 'text-left'; 
             totalCompositionWeight += etf.weight * 100;
         });
         domElements.totalCompositionWeightSpan.textContent = round(totalCompositionWeight, 0);
@@ -718,6 +877,12 @@
         createOrUpdateDoughnutChart('sector', domElements.sectorDoughnutChartCanvas, CONFIG.SECTORS, portfolioData.actualSectors, 'Actual Sector Allocation');
         createOrUpdateDoughnutChart('geo', domElements.geoDoughnutChartCanvas, CONFIG.GEOGRAPHIES, portfolioData.actualGeographies, 'Actual Geographic Allocation');
         
+        if (weightedReturn > -100) { // Use a more reasonable check for valid return
+             displayProjectionTableAndChart(); // Call without args, it will pick up from global/DOM
+        } else {
+            domElements.projectionSectionDiv.classList.add('hidden');
+        }
+
         domElements.aiInsightsCard.classList.add('hidden');domElements.aiInsightsContent.textContent='';domElements.aiInsightsError.textContent='';domElements.aiInsightsLoading.classList.add('hidden');
         domElements.diversificationSuggestionsCard.classList.add('hidden');domElements.diversificationSuggestionsContent.innerHTML='';domElements.diversificationSuggestionsError.textContent='';domElements.diversificationLoading.classList.add('hidden');
         domElements.aiDifferenceAnalysisCard.classList.add('hidden'); domElements.sectorDifferenceExplanation.textContent=''; domElements.sectorDifferenceSuggestions.textContent=''; domElements.geographicDifferenceExplanation.textContent=''; domElements.geographicDifferenceSuggestions.textContent=''; domElements.aiDifferenceAnalysisError.textContent=''; domElements.aiDifferenceAnalysisLoading.classList.add('hidden');
@@ -738,24 +903,11 @@
             const desiredPercent = desiredValue > 1.5 ? desiredValue : desiredValue * 100; 
             const actualPercent = actualIsDecimal ? actualValueDecimal * 100 : actualValueDecimal;
             const difference = actualPercent - desiredPercent;
-
             const row = tbody.insertRow();
-            
-            const categoryCell = row.insertCell();
-            categoryCell.textContent = category;
-            categoryCell.className = 'text-right'; 
-
-            const desiredCell = row.insertCell();
-            desiredCell.textContent = round(desiredPercent);
-            desiredCell.className = 'text-right'; 
-
-            const actualCell = row.insertCell();
-            actualCell.textContent = round(actualPercent);
-            actualCell.className = 'text-right'; 
-            
-            const diffCell = row.insertCell();
-            diffCell.textContent = round(difference);
-            diffCell.className = 'text-right'; 
+            const categoryCell = row.insertCell(); categoryCell.textContent = category; categoryCell.className = 'text-right'; 
+            const desiredCell = row.insertCell(); desiredCell.textContent = round(desiredPercent); desiredCell.className = 'text-right'; 
+            const actualCell = row.insertCell(); actualCell.textContent = round(actualPercent); actualCell.className = 'text-right'; 
+            const diffCell = row.insertCell(); diffCell.textContent = round(difference); diffCell.className = 'text-right'; 
             if (difference < -0.01) diffCell.classList.add('text-red-600'); 
             else if (difference > 0.01) diffCell.classList.add('text-green-600'); 
         });
@@ -765,7 +917,6 @@
     
     async function handleGeneratePortfolio() {
         domElements.formErrorMessageP.textContent = '';
-        // domElements.aiProfileRefinementSection.classList.add('hidden'); // This line is commented out
         selectedBaseProfileKey = null;
         if (updateTotalAllocation('sector') !== 100 || updateTotalAllocation('geo') !== 100) { 
             domElements.formErrorMessageP.textContent = 'Total sector and geographic allocations must each be 100%.'; 
@@ -1057,7 +1208,7 @@ Return your response in the specified JSON format, adhering to the schema. Ensur
         const availableETFsForSuggestion = RAW_VANGUARD_ETFS.filter(etf => !currentPortfolio.etfs.find(pEtf => pEtf.ticker === etf.ticker)).map(etf => ({ ticker: etf.ticker, name: etf.name }));
         const promptTextForGemini = `You are a helpful financial analyst. The user's desired portfolio allocations and the actual allocations of their generated ETF portfolio are provided below. Current ETFs in portfolio: ${currentETFsInPortfolio}. Available ETFs for suggestions (if needed, provide ticker and name): ${JSON.stringify(availableETFsForSuggestion)}. SECTOR ANALYSIS: Desired Sector Allocations: ${JSON.stringify(desiredSectorsPercent)}. Actual Sector Allocations: ${JSON.stringify(actualSectorsPercent)}. Please: 1. Identify the 2-3 most significant differences (over or underweight) between desired and actual sector allocations. 2. Briefly explain potential reasons for these sector differences, considering the ETFs in the current portfolio. 3. Suggest 1-2 actionable steps the user could consider to reduce these sector differences. This might involve adjusting weights of current ETFs or, if a large gap persists, suggesting an alternative ETF from the 'Available ETFs' list that could help (mention its name and ticker). GEOGRAPHIC ANALYSIS: Desired Geographic Allocations: ${JSON.stringify(desiredGeosPercent)}. Actual Geographic Allocations: ${JSON.stringify(actualGeosPercent)}. Please: 1. Identify the 2-3 most significant differences (over or underweight) between desired and actual geographic allocations. 2. Briefly explain potential reasons for these geographic differences, considering the ETFs in the current portfolio. 3. Suggest 1-2 actionable steps the user could consider to reduce these geographic differences. This might involve adjusting weights of current ETFs or, if a large gap persists, suggesting an alternative ETF from the 'Available ETFs' list that could help (mention its name and ticker). IMPORTANT: - Be concise and clear. - Focus on explaining the 'why' behind differences and practical 'how-to' for adjustments. - Acknowledge if perfect alignment might be difficult with the current setup. - Do NOT give financial advice or make specific investment recommendations beyond suggesting alignment strategies. - Return your response in the specified JSON format.`;
         const schema = { type: "OBJECT", properties: { "sectorDifferenceExplanation": { "type": "STRING" }, "sectorDifferenceSuggestions": { "type": "STRING" }, "geographicDifferenceExplanation": { "type": "STRING" }, "geographicDifferenceSuggestions": { "type": "STRING" } }, required: ["sectorDifferenceExplanation", "sectorDifferenceSuggestions", "geographicDifferenceExplanation", "geographicDifferenceSuggestions"] };
-        const geminiModel = "gemini-2.5-pro-preview-05-06"; // Updated model
+        const geminiModel = "gemini-2.5-pro-preview-05-06"; 
         const geminiApiPayload = { contents: [{ role: "user", parts: [{ text: promptTextForGemini }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
         const proxyUrl = "/api/geminiProxy";
         try {
@@ -1100,6 +1251,16 @@ Return your response in the specified JSON format, adhering to the schema. Ensur
         domElements.indicatorCardHeaders.forEach(header => header.addEventListener('click', toggleIndicatorDetails));
         updateTotalAllocation('sector');
         updateTotalAllocation('geo');
+
+        // Event listeners for projection inputs
+        const updateProjectionDisplay = () => {
+            if (currentPortfolio && typeof currentWeightedReturnForProjection !== 'undefined') {
+                displayProjectionTableAndChart();
+            }
+        };
+        domElements.investmentAmountInput.addEventListener('input', updateProjectionDisplay);
+        domElements.contributionAmountInput.addEventListener('input', updateProjectionDisplay);
+        domElements.contributionFrequencySelect.addEventListener('change', updateProjectionDisplay);
     });
 </script>
 </body>
